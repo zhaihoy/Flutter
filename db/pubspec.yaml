@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^0.13.5  # 确保使用最新版本
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -39,6 +40,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  video_player: ^2.1.5
+  palette_generator: ^0.3.0
+  cached_network_image: ^3.1.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -59,6 +63,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - mock/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

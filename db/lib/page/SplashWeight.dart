@@ -60,7 +60,7 @@ class _SplashWeight extends State<StatefulWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Align(
-                    alignment: Alignment(1.0, 0.0),
+                    alignment: const Alignment(1.0, 0.0),
                     child: Container(
                       margin: const EdgeInsets.only(right: 30.0, top: 20.0),
                       padding: const EdgeInsets.only(

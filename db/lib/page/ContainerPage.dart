@@ -46,7 +46,7 @@ class _ContainerPageState extends State<ContainerPage> {
     print('initState _ContainerPageState');
     if (pages.isEmpty) {
       pages = [
-        const HomePage(),
+         HomePage(),
         // BookAudioVideoPage(),
         // GroupPage(),
         // shopPageWidget(),
@@ -110,7 +110,7 @@ class _ContainerPageState extends State<ContainerPage> {
       body: Stack(
         children: [
           _getPagesWidget(0),
-          // _getPagesWidget(1),
+          _getPagesWidget(1),
           // _getPagesWidget(2),
           // _getPagesWidget(3),
           // _getPagesWidget(4),
