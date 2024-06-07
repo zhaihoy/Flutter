@@ -31,9 +31,25 @@ class _SplashPageState extends State<splash> {
                     Center(
                       child: Image.asset("assets/images/splash_logo.png"),
                     ),
-                    // 第三个小部件（位于第二个小部件之上）
                     const Positioned(
                         top: 50, right: 50, child: CountDownWidget()),
+                    const Positioned(
+                      bottom: 10,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Text(
+                          '居中并且在底部',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'FZLanTingHeiS'
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ))));
   }
@@ -97,29 +113,29 @@ class _CountDownStatefulWidget extends State<StatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Container(
-          decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(25)),
-          width: 50,
-          height: 50,
-          child: ElevatedButton(
-              onPressed: () {
-                print("you jump i jump");
-              },
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.zero,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(25)),
+        width: 50,
+        height: 50,
+        child: ElevatedButton(
+            onPressed: () {
+              print("you jump i jump");
+            },
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.zero,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25),
               ),
-              child: Center(
-                  child: Text(
-                '跳过$_seconds' "s",
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.red, fontSize: 12),
-              ))),
-        ),
-      );
+            ),
+            child: Center(
+                child: Text(
+              '跳过$_seconds' "s",
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.red, fontSize: 12),
+            ))),
+      ),
+    );
   }
 
   @override
@@ -133,7 +149,7 @@ class _CountDownStatefulWidget extends State<StatefulWidget> {
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
-        print("zhy"+'$_seconds');
+        print("zhy" + '$_seconds');
       });
       if (_seconds <= 1) {
         _cancelTimer();
