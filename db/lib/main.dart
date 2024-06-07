@@ -1,6 +1,6 @@
+import 'package:db/weight/splashWeight.dart';
 import 'package:flutter/material.dart';
-import '../page/SplashWeight.dart';
-import 'package:db/page/TestWeight.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,6 +12,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // 隐藏状态栏
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -20,7 +23,7 @@ class MyApp extends StatelessWidget {
       ),
       home: const Scaffold(
         // body: TestWeight(),
-        body: SplashWeight(),
+        body: splash(),
       ),
     );
   }
