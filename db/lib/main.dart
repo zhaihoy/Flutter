@@ -1,8 +1,11 @@
+import 'package:db/weight/route/ARoute.dart';
 import 'package:db/weight/splashWeight.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 void main() {
+  ARoute.initARoute();
+  print("zhy^_^ initARoute");
   runApp(const MyApp());
 }
 

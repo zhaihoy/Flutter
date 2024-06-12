@@ -1,3 +1,5 @@
+import 'package:db/utils/FluroUtils.dart';
+import 'package:db/weight/route/HomeRouter.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -42,11 +44,10 @@ class _SplashPageState extends State<splash> {
                           '居中并且在底部',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'FZLanTingHeiS'
-                          ),
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'FZLanTingHeiS'),
                         ),
                       ),
                     ),
@@ -120,7 +121,7 @@ class _CountDownStatefulWidget extends State<StatefulWidget> {
         height: 50,
         child: ElevatedButton(
             onPressed: () {
-              print("you jump i jump");
+              Fluroutils.navigateTo(context, HomeRouter.homePage);
             },
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.zero,
@@ -140,7 +141,6 @@ class _CountDownStatefulWidget extends State<StatefulWidget> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _timer.cancel();
     super.dispose();
   }
@@ -149,7 +149,6 @@ class _CountDownStatefulWidget extends State<StatefulWidget> {
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
-        print("zhy" + '$_seconds');
       });
       if (_seconds <= 1) {
         _cancelTimer();
@@ -162,6 +161,6 @@ class _CountDownStatefulWidget extends State<StatefulWidget> {
   /// 取消倒计时的计时器。
   void _cancelTimer() {
     _timer.cancel();
-    print("i Want Jump");
+    // Fluroutils.navigateTo(context, HomeRouter.homePage);
   }
 }
