@@ -41,10 +41,10 @@ class _SplashPageState extends State<splash> {
                       right: 0,
                       child: Center(
                         child: Text(
-                          '居中并且在底部',
+                          '---技术无止境---',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              color: Colors.black,
+                              color: Color(0xFFFCE4EC),
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'FZLanTingHeiS'),
@@ -148,8 +148,7 @@ class _CountDownStatefulWidget extends State<StatefulWidget> {
   /// 启动倒计时的计时器。
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-      });
+      setState(() {});
       if (_seconds <= 1) {
         _cancelTimer();
         return;
