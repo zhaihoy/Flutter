@@ -10,6 +10,6 @@ class homePageItem extends StatefulWidget {
 class _homePageItemState extends State<homePageItem> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Text("_homePageItemState");
   }
 }

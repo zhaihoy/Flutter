@@ -10,6 +10,6 @@ class SquarePageItem extends StatefulWidget {
 class _PageItemState extends State<SquarePageItem> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Text("SquarePageItem");
   }
 }

@@ -10,6 +10,6 @@ class ProjectPageItem extends StatefulWidget {
 class _PublicNumberItemState extends State<ProjectPageItem> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Text("ProjectPageItem");
   }
 }

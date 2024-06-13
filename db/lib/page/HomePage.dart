@@ -13,12 +13,27 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  int selectIndex = 0;
   List<Widget> pageList = <Widget>[];
   List<ListTile> titleList = <ListTile>[];
+  List<BottomNavigationBarItem> navBar = <BottomNavigationBarItem>[];
+  List<String> titleNameList = ["首页", "公众号", "体系", "广场", "项目"];
 
   @override
   void initState() {
     super.initState();
+    navBar.clear();
+    navBar.add(
+        const BottomNavigationBarItem(icon: Icon(Icons.home), label: "首页"));
+    navBar.add(
+        const BottomNavigationBarItem(icon: Icon(Icons.public), label: "公众号"));
+    navBar.add(const BottomNavigationBarItem(
+        icon: Icon(Icons.settings_system_daydream), label: "体系"));
+    navBar.add(const BottomNavigationBarItem(
+        icon: Icon(Icons.square_rounded), label: "广场"));
+    navBar.add(const BottomNavigationBarItem(
+        icon: Icon(Icons.propane_outlined), label: "项目"));
     pageList.clear();
     titleList.clear();
     //初始化五个页面 首页、公众号、体系、广场、项目
@@ -52,6 +67,15 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () {
+            _scaffoldKey.currentState!.openDrawer(); // Open drawer
+          },
+        ),
+      ),
       drawer: Drawer(
         child: CustomScrollView(
           slivers: [
@@ -109,6 +133,24 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+      body: pageList[selectIndex],
+      bottomNavigationBar: Container(
+        child: BottomNavigationBar(
+          items: navBar,
+          currentIndex: selectIndex,
+          onTap: _onItemTapped,
+          selectedItemColor: const Color(0xFFFFF8E1),
+          type: BottomNavigationBarType.fixed,
+          // 确保类型为 fixed 否则设置了颜色不生效
+          backgroundColor: const Color(0xFF90CAF9), // 设置背景颜色
+        ),
+      ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      selectIndex = index;
+    });
   }
 }

@@ -10,6 +10,6 @@ class SystemPageItem extends StatefulWidget {
 class _PageItemState extends State<SystemPageItem> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Text("SystemPageItem");
   }
 }

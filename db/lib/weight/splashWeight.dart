@@ -121,7 +121,7 @@ class _CountDownStatefulWidget extends State<StatefulWidget> {
         height: 50,
         child: ElevatedButton(
             onPressed: () {
-              Fluroutils.navigateTo(context, HomeRouter.homePage);
+              _cancelTimer();
             },
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.zero,
@@ -160,6 +160,6 @@ class _CountDownStatefulWidget extends State<StatefulWidget> {
   /// 取消倒计时的计时器。
   void _cancelTimer() {
     _timer.cancel();
-    // Fluroutils.navigateTo(context, HomeRouter.homePage);
+    Fluroutils.navigateTo(context, HomeRouter.homePage, replace: true);
   }
 }
