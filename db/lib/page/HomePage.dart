@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'homePageItem.dart';
 import 'ProjectPageItem.dart';
 import 'PublicNumberItem.dart';
@@ -66,83 +67,97 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: const Text(
-          "Flutter",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            _scaffoldKey.currentState!.openDrawer(); // Open drawer
-          },
-        ),
-      ),
-      drawer: Drawer(
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Container(
-                width: double.infinity,
-                height: 250,
-                decoration: const BoxDecoration(color: Colors.blue),
-                child: DrawerHeader(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 100,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.blue, // 设置填充颜色
-                          border:
-                              Border.all(color: Colors.black, width: 2), // 设置边框
-                        ),
-                        child: const CircleAvatar(
-                          radius: 50,
-                          child: Icon(Icons.person, size: 50),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      ElevatedButton(
-                        onPressed: () {
-                          // 处理登录按钮点击事件
-                        },
-                        child: const Text(
-                          "点击登录",
-                          style: TextStyle(fontSize: 15, color: Colors.white),
-                        ),
-                      ),
-                    ],
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.top]);
+    return MaterialApp(
+      home: Scaffold(
+        key: _scaffoldKey,
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 0.0), // 设置距离顶部高度为20
+              child: PreferredSize(
+                preferredSize: const Size.fromHeight(kToolbarHeight),
+                child: AppBar(
+                  title: const Text(
+                    "Flutter",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  leading: IconButton(
+                    icon: const Icon(Icons.menu),
+                    onPressed: () {
+                      _scaffoldKey.currentState!.openDrawer(); // Open drawer
+                    },
                   ),
                 ),
               ),
             ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return Column(
-                    children: [
-                      titleList[index],
-                      if (index < titleList.length - 1) const Divider(),
-                    ],
-                  );
-                },
-                childCount: titleList.length,
-              ),
+            Expanded(
+              child: pageList[selectIndex], // 确保你的 body 在 AppBar 下面显示
             ),
           ],
         ),
-      ),
-      body: pageList[selectIndex],
-      bottomNavigationBar: Container(
-        child: BottomNavigationBar(
+        drawer: Drawer(
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Container(
+                  width: double.infinity,
+                  height: 250,
+                  decoration: const BoxDecoration(color: Colors.blue),
+                  child: DrawerHeader(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.blue, // 设置填充颜色
+                            border: Border.all(
+                                color: Colors.black, width: 2), // 设置边框
+                          ),
+                          child: const CircleAvatar(
+                            radius: 50,
+                            child: Icon(Icons.person, size: 50),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        ElevatedButton(
+                          onPressed: () {
+                            // 处理登录按钮点击事件
+                          },
+                          child: const Text(
+                            "点击登录",
+                            style: TextStyle(fontSize: 15, color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                    return Column(
+                      children: [
+                        titleList[index],
+                        if (index < titleList.length - 1) const Divider(),
+                      ],
+                    );
+                  },
+                  childCount: titleList.length,
+                ),
+              ),
+            ],
+          ),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
           items: navBar,
           currentIndex: selectIndex,
           onTap: _onItemTapped,
