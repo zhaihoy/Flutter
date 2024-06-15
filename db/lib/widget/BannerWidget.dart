@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 import '../bean/ResponseData.dart';
 import '../service/ApiService.dart';
-import 'DetailPage.dart';
 
 class BannerWidget extends StatefulWidget {
   const BannerWidget({super.key});

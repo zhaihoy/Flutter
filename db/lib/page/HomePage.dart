@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../weight/DrawContainer.dart';
 import 'homePageItem.dart';
 import 'ProjectPageItem.dart';
 import 'PublicNumberItem.dart';
@@ -14,6 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final PageController _pageController = PageController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int selectIndex = 0;
   List<Widget> pageList = <Widget>[];
@@ -72,39 +74,36 @@ class _HomePageState extends State<HomePage> {
     return MaterialApp(
       home: Scaffold(
         key: _scaffoldKey,
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 0.0), // 设置距离顶部高度为20
-              child: PreferredSize(
-                preferredSize: const Size.fromHeight(kToolbarHeight),
-                child: AppBar(
-                  title: const Text(
-                    "Flutter",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  leading: IconButton(
-                    icon: const Icon(Icons.menu),
-                    onPressed: () {
-                      _scaffoldKey.currentState!.openDrawer(); // Open drawer
-                    },
-                  ),
+        body: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                leading: IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () {
+                    _scaffoldKey.currentState!.openDrawer(); // Open drawer
+                  },
                 ),
-              ),
-            ),
-            Expanded(
-              child: pageList[selectIndex], // 确保你的 body 在 AppBar 下面显示
-            ),
-          ],
+                title: const Text('Flutter'),
+                floating: true,
+                // 设置为true，表示滑动到顶部时隐藏标题
+                snap: true,
+                // 设置为true，表示向下滚动时AppBar会立即展开，向上滚动时立即收缩
+                // flexibleSpace: Placeholder(), 有的像是明星详情页的布局 需要用的flexibleSpace
+                // 可选的，设置AppBar背景
+              )
+            ];
+          },
+          body: PageView(
+            controller: _pageController,
+            children: pageList,
+          ),
         ),
         drawer: Drawer(
           child: CustomScrollView(
             slivers: [
               const SliverToBoxAdapter(
-                child: DrawContainer(),
+                child: DrawContainerHeader(),
               ),
               SliverList(
                 delegate: SliverChildBuilderDelegate(
@@ -125,7 +124,7 @@ class _HomePageState extends State<HomePage> {
         bottomNavigationBar: BottomNavigationBar(
           items: navBar,
           currentIndex: selectIndex,
-          onTap: _onItemTapped,
+          onTap: (index) => _pageController.jumpToPage(index),
           selectedItemColor: const Color(0xFFFFF8E1),
           type: BottomNavigationBarType.fixed,
           // 确保类型为 fixed 否则设置了颜色不生效
@@ -135,68 +134,16 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _pageController.dispose();
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       selectIndex = index;
     });
-  }
-}
-
-/**
- *抽取的组件
- */
-class DrawContainer extends StatefulWidget {
-  const DrawContainer({super.key});
-
-  @override
-  State<StatefulWidget> createState() {
-    return _drawContainer();
-  }
-}
-
-class _drawContainer extends State<StatefulWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: 250,
-        decoration: const BoxDecoration(color: Colors.blue),
-        child: DrawerHeader(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.blue, // 设置填充颜色
-                  border: Border.all(color: Colors.black, width: 2), // 设置边框
-                ),
-                child: const CircleAvatar(
-                  radius: 50,
-                  child: Icon(Icons.person, size: 50),
-                ),
-              ),
-              const SizedBox(height: 8),
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.black),
-                ),
-                onPressed: () {
-                  // 处理登录按钮点击事件
-                },
-                child: const Text(
-                  "点击登录",
-                  style: TextStyle(fontSize: 15, color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }
