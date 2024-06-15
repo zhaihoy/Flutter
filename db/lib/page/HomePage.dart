@@ -103,43 +103,8 @@ class _HomePageState extends State<HomePage> {
         drawer: Drawer(
           child: CustomScrollView(
             slivers: [
-              SliverToBoxAdapter(
-                child: Container(
-                  width: double.infinity,
-                  height: 250,
-                  decoration: const BoxDecoration(color: Colors.blue),
-                  child: DrawerHeader(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.blue, // 设置填充颜色
-                            border: Border.all(
-                                color: Colors.black, width: 2), // 设置边框
-                          ),
-                          child: const CircleAvatar(
-                            radius: 50,
-                            child: Icon(Icons.person, size: 50),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        ElevatedButton(
-                          onPressed: () {
-                            // 处理登录按钮点击事件
-                          },
-                          child: const Text(
-                            "点击登录",
-                            style: TextStyle(fontSize: 15, color: Colors.white),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+              const SliverToBoxAdapter(
+                child: DrawContainer(),
               ),
               SliverList(
                 delegate: SliverChildBuilderDelegate(
@@ -174,5 +139,64 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       selectIndex = index;
     });
+  }
+}
+
+/**
+ *抽取的组件
+ */
+class DrawContainer extends StatefulWidget {
+  const DrawContainer({super.key});
+
+  @override
+  State<StatefulWidget> createState() {
+    return _drawContainer();
+  }
+}
+
+class _drawContainer extends State<StatefulWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        height: 250,
+        decoration: const BoxDecoration(color: Colors.blue),
+        child: DrawerHeader(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.blue, // 设置填充颜色
+                  border: Border.all(color: Colors.black, width: 2), // 设置边框
+                ),
+                child: const CircleAvatar(
+                  radius: 50,
+                  child: Icon(Icons.person, size: 50),
+                ),
+              ),
+              const SizedBox(height: 8),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.black),
+                ),
+                onPressed: () {
+                  // 处理登录按钮点击事件
+                },
+                child: const Text(
+                  "点击登录",
+                  style: TextStyle(fontSize: 15, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
