@@ -1,6 +1,7 @@
 import 'package:db/page/HomePage.dart';
 import 'package:db/weight/route/HomeRouter.dart';
 import 'package:db/weight/route/IRouterProvider.dart';
+import 'package:db/weight/route/WebViewRouter.dart';
 import 'package:fluro/fluro.dart';
 import 'package:fluro/src/fluro_router.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,7 +18,6 @@ class ARoute {
     /// 指定路由跳转错误返回页
     router.notFoundHandler = Handler(
         handlerFunc: (BuildContext? context, Map<String, List<String>> params) {
-      print('未找到目标页');
       return const NotPage();
     });
 
@@ -35,9 +35,9 @@ class ARoute {
 
     _listRouter.clear();
     _listRouter.add(HomeRouter());
+    _listRouter.add(WebViewRouter());
 
     void initRouter(IRouterProvide routerProvide) {
-      print("zhy^_^ 注册");
       routerProvide.initRouter(router);
     }
 

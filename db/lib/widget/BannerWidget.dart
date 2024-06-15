@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:db/bean/BannerBean.dart';
 import 'package:db/service/ApiConstants.dart';
+import 'package:db/utils/FluroUtils.dart';
+import 'package:db/weight/route/ARoute.dart';
 import 'package:flutter/material.dart';
 
 import '../bean/ResponseData.dart';
@@ -17,11 +18,15 @@ class BannerWidget extends StatefulWidget {
 class _BannerWidgetState extends State<BannerWidget> {
   final ApiService apiService = ApiService(baseUrl: ApiConstants.baseUrl);
   late Future<ResponseData> responseData;
+  late CarouselController _controller;
+
+  var _current = 0;
 
   @override
   void initState() {
     super.initState();
     responseData = apiService.fetchImages(ApiConstants.BANNER);
+    _controller = CarouselController();
   }
 
   /**
@@ -53,41 +58,103 @@ class _BannerWidgetState extends State<BannerWidget> {
    */
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<ResponseData>(
-      future: responseData,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError || snapshot.data!.errorCode != 0) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (!snapshot.hasData || snapshot.data!.data.isEmpty) {
-          return const Center(child: Text('No images found'));
-        } else {
-          return CarouselSlider.builder(
-            itemCount: snapshot.data!.data.length,
-            itemBuilder: (context, index, realIndex) {
-              final bean =snapshot.data!.data[index];
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          DetailPage(imageUrl: bean.imagePath),
-                    ),
-                  );
-                },
-                child: Image.network(bean.imagePath, fit: BoxFit.cover),
-              );
-            },
-            options: CarouselOptions(
-              autoPlay: true,
-              aspectRatio: 2.0,
-              enlargeCenterPage: true,
-            ),
-          );
-        }
-      },
+    return Container(
+      decoration: const BoxDecoration(color: Color(0xFFFAFAFA)),
+      child: FutureBuilder<ResponseData>(
+        future: responseData,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError || snapshot.data!.errorCode != 0) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.data.isEmpty) {
+            return const Center(child: Text('No images found'));
+          } else {
+            return Stack(
+              children: [
+                CarouselSlider.builder(
+                  itemCount: snapshot.data!.data.length,
+                  itemBuilder: (context, index, realIndex) {
+                    final bean = snapshot.data!.data[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Fluroutils.navigateTo(context,
+                            '${ARoute.webViewPage}?url=${Uri.encodeComponent(snapshot.data!.data[_current].url)}');
+                      },
+                      child: Image.network(
+                        bean.imagePath,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      ),
+                    );
+                  },
+                  options: CarouselOptions(
+                    autoPlay: true,
+                    aspectRatio: 2.0,
+                    enlargeCenterPage: true,
+                    viewportFraction: 1.0,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _current = index;
+                      });
+                    },
+                  ),
+                  carouselController: _controller,
+                ),
+                Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      decoration: const BoxDecoration(color: Color(0x1F000000)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              snapshot.data!.data[_current].title,
+                              style: const TextStyle(
+                                  color: Colors.white), // 根据需要设置文本样式
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: snapshot.data!.data
+                                .asMap()
+                                .entries
+                                .map((entry) {
+                              return GestureDetector(
+                                onTap: () =>
+                                    _controller.animateToPage(entry.key),
+                                child: Container(
+                                  width: 10.0,
+                                  height: 10.0,
+                                  // 调整大小更明显
+                                  padding: const EdgeInsets.all(8.0),
+                                  margin: const EdgeInsets.symmetric(
+                                      vertical: 8.0, horizontal: 4.0),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: (Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.green)
+                                        .withOpacity(
+                                            _current == entry.key ? 0.9 : 0.4),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                    ))
+              ],
+            );
+          }
+        },
+      ),
     );
   }
 }

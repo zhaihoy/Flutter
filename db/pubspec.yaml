@@ -34,7 +34,9 @@ dependencies:
   # 路由框架 https://github.com/theyakka/fluro
   fluro: ^2.0.5
 
-  carousel_slider: ^4.0.0
+  carousel_slider: ^4.0.0   # Banner
+  smooth_page_indicator: ^1.0.0 # 指示器
+  webview_flutter: ^3.0.0 #WebView
 
 
   # The following adds the Cupertino Icons fonts to your application.

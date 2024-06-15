@@ -10,6 +10,6 @@ class NotPage extends StatefulWidget {
 class _NotPageState extends State<NotPage> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Text("检查一下吧 出错了! 我的哥");
   }
 }

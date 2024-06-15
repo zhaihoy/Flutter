@@ -52,9 +52,10 @@ class ApiService {
 
     if (statusCode >= 200 && statusCode < 300) {
       if (body.isNotEmpty) {
-        dynamic jsonData = json.decode(body);
-        print('zhy ' + jsonData);
-        final jsonResponse = json.decode(body);
+        //在Flutter中，你可以使用Map<String, dynamic>来接收和解析JSON数据。
+        // 实际上，Dart的dart:convert库中的json.decode函数会将JSON数据解析为一个包含嵌套Map和List的结构。
+        // 然后，你可以使用这些Map和List来进一步处理和访问数据。
+        final jsonResponse = json.decode(body) as Map<String, dynamic>;
         return ResponseData.fromJson(jsonResponse);
       } else {
         throw Exception('Error: $statusCode, Body: $body');
