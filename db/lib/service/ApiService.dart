@@ -1,30 +1,47 @@
 import 'dart:convert';
+
+import 'package:db/bean/PageResponseData.dart';
 import 'package:http/http.dart' as http;
 
-import '../bean/BannerBean.dart';
 import '../bean/ResponseData.dart';
+import 'ApiConstants.dart';
 
+/**
+ * 全局只初始化一次
+ * 方法1：使用单例模式
+ * 方法2：使用 Provider 包进行依赖注入
+ * 方法3：使用 GetIt 包进行依赖注入
+ */
 class ApiService {
   final String baseUrl;
+  static final ApiService _instance =
+      ApiService._internal(ApiConstants.baseUrl);
 
-  ApiService({required this.baseUrl});
+  // 私有构造函数
+  ApiService._internal(this.baseUrl);
 
+  // 工厂构造函数返回同一个实例
+  factory ApiService() {
+    return _instance;
+  }
+
+  // GET 请求
   Future<dynamic> get(String endpoint) async {
     final response = await http.get(Uri.parse('$baseUrl$endpoint'));
-
     return _processResponse(response);
   }
 
+  // POST 请求
   Future<dynamic> post(String endpoint, Map<String, dynamic> body) async {
     final response = await http.post(
       Uri.parse('$baseUrl$endpoint'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
-
     return _processResponse(response);
   }
 
+  // 处理响应
   dynamic _processResponse(http.Response response) {
     final statusCode = response.statusCode;
     final body = response.body;
@@ -52,11 +69,47 @@ class ApiService {
 
     if (statusCode >= 200 && statusCode < 300) {
       if (body.isNotEmpty) {
-        //在Flutter中，你可以使用Map<String, dynamic>来接收和解析JSON数据。
-        // 实际上，Dart的dart:convert库中的json.decode函数会将JSON数据解析为一个包含嵌套Map和List的结构。
-        // 然后，你可以使用这些Map和List来进一步处理和访问数据。
         final jsonResponse = json.decode(body) as Map<String, dynamic>;
         return ResponseData.fromJson(jsonResponse);
+      } else {
+        throw Exception('Error: $statusCode, Body: $body');
+      }
+    } else {
+      throw Exception('Error: $statusCode, Body: $body');
+    }
+  }
+
+  // https://www.wanandroid.com/article/list/{0}/json
+  //
+  // 方法：GET
+  // 参数：页码，拼接在连接中，从0开始。
+
+  Future<PagePageResponseData> fetchPagedData(int page) async {
+    final response =
+        await http.get(Uri.parse('$baseUrl${"article/list/"}$page/json'));
+    final statusCode = response.statusCode;
+    final body = response.body;
+    if (statusCode >= 200 && statusCode < 300) {
+      if (body.isNotEmpty) {
+        final jsonResponse = json.decode(body) as Map<String, dynamic>;
+        return PagePageResponseData.fromJson(jsonResponse);
+      } else {
+        throw Exception('Error: $statusCode, Body: $body');
+      }
+    } else {
+      throw Exception('Error: $statusCode, Body: $body');
+    }
+  }
+
+  Future<PagePageResponseData> fetchPageTopData() async {
+    final response =
+        await http.get(Uri.parse("${baseUrl}article/top/json"));
+    final statusCode = response.statusCode;
+    final body = response.body;
+    if (statusCode >= 200 && statusCode < 300) {
+      if (body.isNotEmpty) {
+        final jsonResponse = json.decode(body) as Map<String, dynamic>;
+        return PagePageResponseData.fromTopJson(jsonResponse);
       } else {
         throw Exception('Error: $statusCode, Body: $body');
       }

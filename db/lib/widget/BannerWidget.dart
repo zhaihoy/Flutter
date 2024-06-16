@@ -15,7 +15,7 @@ class BannerWidget extends StatefulWidget {
 }
 
 class _BannerWidgetState extends State<BannerWidget> {
-  final ApiService apiService = ApiService(baseUrl: ApiConstants.baseUrl);
+  final ApiService apiService = ApiService();
   late Future<ResponseData> responseData;
   late CarouselController _controller;
 
