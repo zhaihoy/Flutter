@@ -95,6 +95,7 @@ class _HomePageState extends State<HomePage> {
             ];
           },
           body: PageView(
+            physics: const NeverScrollableScrollPhysics(), // 禁止滑动
             controller: _pageController,
             children: pageList,
           ),
