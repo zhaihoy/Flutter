@@ -72,12 +72,12 @@ class PagePageResponseData {
 
   static Future<PagePageResponseData> fromTopJson(
       Map<String, dynamic> jsonResponse) async {
-      final data = PaginationData.fromTopJson(jsonResponse);
-      final errorCode = jsonResponse['errorCode'];
-      final errorMsg = jsonResponse['errorMsg'];
-      return PagePageResponseData(
-          data: data, errorCode: errorCode, errorMsg: errorMsg);
-    }
+    final data = PaginationData.fromTopJson(jsonResponse);
+    final errorCode = jsonResponse['errorCode'];
+    final errorMsg = jsonResponse['errorMsg'];
+    return PagePageResponseData(
+        data: data, errorCode: errorCode, errorMsg: errorMsg);
+  }
 }
 
 class PaginationData {
@@ -101,23 +101,23 @@ class PaginationData {
 
   factory PaginationData.fromTopJson(Map<String, dynamic> json) {
     var articles = (json['data'] as List<dynamic>)
-        .map((articleJson) => Article.fromJson(articleJson))
+        .map((articleJson) => Article.fromJson(articleJson, true))
         .toList();
     return PaginationData(
-      curPage: json['curPage']??0,
+      curPage: json['curPage'] ?? 0,
       datas: articles,
-      offset: json['offset']??0,
-      over: json['over']??false,
-      pageCount: json['pageCount']??0,
-      size: json['size']??0,
-      total: json['total']??0,
+      offset: json['offset'] ?? 0,
+      over: json['over'] ?? false,
+      pageCount: json['pageCount'] ?? 0,
+      size: json['size'] ?? 0,
+      total: json['total'] ?? 0,
     );
   }
 
   factory PaginationData.fromJson(Map<String, dynamic> json) {
     var datasList = json['datas'] as List;
     List<Article> articles =
-        datasList.map((item) => Article.fromJson(item)).toList();
+        datasList.map((item) => Article.fromJson(item, false)).toList();
     return PaginationData(
       curPage: json['curPage'],
       datas: articles,
@@ -132,6 +132,7 @@ class PaginationData {
 
 class Article {
   final bool adminAdd;
+  final bool isTop;
   final String apkLink;
   final int audit;
   final String author;
@@ -165,7 +166,6 @@ class Article {
   final int type;
   final int userId;
   final int visible;
-  final int zan;
 
   Article({
     required this.adminAdd,
@@ -203,46 +203,74 @@ class Article {
     required this.userId,
     required this.visible,
     required this.zan,
+    required this.isTop,
   });
 
-  factory Article.fromJson(Map<String, dynamic> json) {
+  final int zan;
+
+  factory Article.fromJson(Map<String, dynamic> json, bool top) {
     return Article(
-      adminAdd: json['adminAdd'],
-      apkLink: json['apkLink'],
-      audit: json['audit'],
-      author: json['author'],
-      canEdit: json['canEdit'],
-      chapterId: json['chapterId'],
-      chapterName: json['chapterName'],
-      collect: json['collect'],
-      courseId: json['courseId'],
-      desc: json['desc'],
-      descMd: json['descMd'],
-      envelopePic: json['envelopePic'],
-      fresh: json['fresh'],
-      host: json['host'],
-      id: json['id'],
-      isAdminAdd: json['isAdminAdd'],
-      link: json['link'],
-      niceDate: json['niceDate'],
-      niceShareDate: json['niceShareDate'],
-      origin: json['origin'],
-      prefix: json['prefix'],
-      projectLink: json['projectLink'],
-      publishTime: json['publishTime'],
-      realSuperChapterId: json['realSuperChapterId'],
-      selfVisible: json['selfVisible'],
-      shareDate: json['shareDate'],
-      shareUser: json['shareUser'],
-      superChapterId: json['superChapterId'],
-      superChapterName: json['superChapterName'],
-      tags: json['tags'],
-      // 根据实际情况处理标签字段
-      title: json['title'],
-      type: json['type'],
-      userId: json['userId'],
-      visible: json['visible'],
-      zan: json['zan'],
+        adminAdd: json['adminAdd'],
+        apkLink: json['apkLink'],
+        audit: json['audit'],
+        author: json['author'],
+        canEdit: json['canEdit'],
+        chapterId: json['chapterId'],
+        chapterName: json['chapterName'],
+        collect: json['collect'],
+        courseId: json['courseId'],
+        desc: json['desc'],
+        descMd: json['descMd'],
+        envelopePic: json['envelopePic'],
+        fresh: json['fresh'],
+        host: json['host'],
+        id: json['id'],
+        isAdminAdd: json['isAdminAdd'],
+        link: json['link'],
+        niceDate: json['niceDate'],
+        niceShareDate: json['niceShareDate'],
+        origin: json['origin'],
+        prefix: json['prefix'],
+        projectLink: json['projectLink'],
+        publishTime: json['publishTime'],
+        realSuperChapterId: json['realSuperChapterId'],
+        selfVisible: json['selfVisible'],
+        shareDate: json['shareDate'],
+        shareUser: json['shareUser'],
+        superChapterId: json['superChapterId'],
+        superChapterName: json['superChapterName'],
+        tags: json['tags'].map((tag) => Tag.fromJson(tag)).toList() ??
+            List<Tag>,
+        // 根据实际情况处理标签字段
+        title: json['title'],
+        type: json['type'],
+        userId: json['userId'],
+        visible: json['visible'],
+        zan: json['zan'],
+        isTop: top);
+  }
+}
+
+// Define the Tag class
+class Tag {
+  final String name;
+  final String url;
+
+  Tag({required this.name, required this.url});
+
+  // Factory constructor to create a Tag from JSON
+  factory Tag.fromJson(Map<String, dynamic> json) {
+    return Tag(
+      name: json['name'],
+      url: json['url'],
     );
+  }
+
+  // Method to convert a Tag to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'url': url,
+    };
   }
 }

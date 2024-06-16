@@ -48,7 +48,7 @@ class _homePageItemState extends State<homePageItem> {
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
                   if (index < items.length) {
-                    return ArticleCard();
+                    return ArticleCard(items[index]);
                   } else {
                     if (reachedEnd) {
                       return const Padding(
