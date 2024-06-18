@@ -4,7 +4,7 @@ import 'package:db/bean/PageResponseData.dart';
 import 'package:http/http.dart' as http;
 
 import '../bean/ArticleResponse.dart';
-import '../bean/PublicListBean.dart';
+import '../bean/ChapterResponse.dart';
 import '../bean/ResponseData.dart';
 import 'ApiConstants.dart';
 
@@ -116,7 +116,7 @@ class ApiService {
   /**
    * 请求公众号列表
    */
-  Future<PublicListBean> fetchPagePublicNumberItemData() async {
+  Future<ChapterResponse> fetchPagePublicNumberItemData() async {
     final response = await http
         .get(Uri.parse(baseUrl + ApiConstants.WXARTICLE_CHAPTERS_LIST));
     final statusCode = response.statusCode;
@@ -124,7 +124,7 @@ class ApiService {
     if (statusCode >= 200 && statusCode < 300) {
       if (body.isNotEmpty) {
         final jsonResponse = json.decode(body) as Map<String, dynamic>;
-        return PublicListBean.fromJson(jsonResponse);
+        return ChapterResponse.fromJson(jsonResponse);
       } else {
         throw Exception('Error: $statusCode, Body: $body');
       }

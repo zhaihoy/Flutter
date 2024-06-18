@@ -1,4 +1,8 @@
+import 'package:db/service/ApiService.dart';
+import 'package:db/weight/PagePublicWidget.dart';
 import 'package:flutter/material.dart';
+
+import '../bean/ChapterResponse.dart';
 
 class PublicNumberItem extends StatefulWidget {
   const PublicNumberItem({super.key});
@@ -14,16 +18,23 @@ class _PageItemState extends State<PublicNumberItem>
   late List<Widget> _children;
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    ChapterResponse fetchPagePublicNumberItemData =
+        await ApiService().fetchPagePublicNumberItemData();
+    _tab.clear();
+    for (int i = 0; i < fetchPagePublicNumberItemData.data.length; i++) {
+      _tab.add(Tab(text: fetchPagePublicNumberItemData.data[i].name));
+      _children.add(PagePublicWidget( fetchPagePublicNumberItemData.data[i]));
+    }
+    
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
-
   }
 
   @override
