@@ -9,9 +9,7 @@ class WebViewPage extends StatefulWidget {
     super.key,
     required this.title,
     required this.url,
-  }){
-    print("zhy^_^ " + url + "---" + title);
-  }
+  }) {}
 
   @override
   _WebViewPageState createState() => _WebViewPageState();
@@ -44,11 +42,16 @@ class _WebViewPageState extends State<WebViewPage> {
               setState(() {
                 _isLoading = true;
               });
-              _updatePageTitle('');
+              _updatePageTitle(_pageTitle.isEmpty ? widget.title : _pageTitle);
             },
             onPageFinished: (String url) {
-              _controller.runJavascriptReturningResult('document.title').then((
-                  title) {
+              _controller
+                  .runJavascriptReturningResult('document.title')
+                  .then((title) {
+                if (title.isEmpty || title == "" || title == '""') {
+                  print("Debug: Title is empty");
+                  return;
+                }
                 _updatePageTitle(title);
               }).catchError((error) {
                 debugPrint('Failed to get title: $error');
@@ -64,7 +67,7 @@ class _WebViewPageState extends State<WebViewPage> {
             },
           ),
           if (_isLoading)
-            Center(
+            const Center(
               child: CircularProgressIndicator(),
             ),
         ],

@@ -1,5 +1,7 @@
 import 'package:db/bean/PageResponseData.dart';
+import 'package:db/utils/FluroUtils.dart';
 import 'package:db/weight/TagWidget.dart';
+import 'package:db/weight/route/ARoute.dart';
 import 'package:flutter/material.dart';
 
 /// 主页Item组件
@@ -26,8 +28,7 @@ class _ArticleCardState extends State<ArticleCard> {
     }
   }
 
-  /// InkWell 组件是 Flutter 中的一个可点击组件，通常用于包裹其它组件以提供点击响应效果。
-  /// 它的外观效果会对触摸作出反馈，比如水波纹效果或者自定义的点击效果。
+  /// InkWell 组件是 Flutter 中的一个可点击组件，通常用于包裹其它组件以提供点击响应效果。它的外观效果会对触摸作出反馈，比如水波纹效果或者自定义的点击效果。
 
   /// 主要特点包括：
 
@@ -43,10 +44,11 @@ class _ArticleCardState extends State<ArticleCard> {
         ),
         child: InkWell(
           onTap: () {
-            // Handle tap event
+            Fluroutils.navigateTo(context,
+                '${ARoute.webViewPage}?title=${Uri.encodeComponent(widget.data.title)}&url=${Uri.encodeComponent(widget.data.link)}');
           },
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -61,12 +63,13 @@ class _ArticleCardState extends State<ArticleCard> {
       );
 
   Widget _buildHeader() {
+    //todo 要注意横线宽度超出屏幕  设置singleScrollView也是不行的 因为跟我们设计理念不一致
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         if (widget.data.isTop) _buildTag('顶置', Colors.red),
-        if (widget.data.chapterName.isNotEmpty)
-          _buildTag(widget.data.chapterName, Colors.red),
+        // if (widget.data.chapterName.isNotEmpty)
+        //   _buildTag(widget.data.chapterName, Colors.red),
         if (widget.data.superChapterName.isNotEmpty)
           _buildTag(widget.data.superChapterName, Colors.blueAccent),
         const SizedBox(width: 8.0),
