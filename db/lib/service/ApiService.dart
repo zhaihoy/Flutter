@@ -3,15 +3,11 @@ import 'dart:convert';
 import 'package:db/bean/PageResponseData.dart';
 import 'package:http/http.dart' as http;
 
+import '../bean/ArticleResponse.dart';
+import '../bean/PublicListBean.dart';
 import '../bean/ResponseData.dart';
 import 'ApiConstants.dart';
 
-/**
- * 全局只初始化一次
- * 方法1：使用单例模式
- * 方法2：使用 Provider 包进行依赖注入
- * 方法3：使用 GetIt 包进行依赖注入
- */
 class ApiService {
   final String baseUrl;
   static final ApiService _instance =
@@ -102,14 +98,59 @@ class ApiService {
   }
 
   Future<PagePageResponseData> fetchPageTopData() async {
-    final response =
-        await http.get(Uri.parse("${baseUrl}article/top/json"));
+    final response = await http.get(Uri.parse("${baseUrl}article/top/json"));
     final statusCode = response.statusCode;
     final body = response.body;
     if (statusCode >= 200 && statusCode < 300) {
       if (body.isNotEmpty) {
         final jsonResponse = json.decode(body) as Map<String, dynamic>;
         return PagePageResponseData.fromTopJson(jsonResponse);
+      } else {
+        throw Exception('Error: $statusCode, Body: $body');
+      }
+    } else {
+      throw Exception('Error: $statusCode, Body: $body');
+    }
+  }
+
+  /**
+   * 请求公众号列表
+   */
+  Future<PublicListBean> fetchPagePublicNumberItemData() async {
+    final response = await http
+        .get(Uri.parse(baseUrl + ApiConstants.WXARTICLE_CHAPTERS_LIST));
+    final statusCode = response.statusCode;
+    final body = response.body;
+    if (statusCode >= 200 && statusCode < 300) {
+      if (body.isNotEmpty) {
+        final jsonResponse = json.decode(body) as Map<String, dynamic>;
+        return PublicListBean.fromJson(jsonResponse);
+      } else {
+        throw Exception('Error: $statusCode, Body: $body');
+      }
+    } else {
+      throw Exception('Error: $statusCode, Body: $body');
+    }
+  }
+
+  String getWxArticleUrl(int id, int page) {
+    // 使用字符串插值来动态替换参数
+    return baseUrl +
+        ApiConstants.WXARTICLE_LIST
+            .replaceAll('{id}', id.toString())
+            .replaceAll('{page}', page.toString());
+  }
+
+  Future<ArticleResponse> fetchArticleResponse(
+      int idValue, int pageValue) async {
+    var wxArticleUrl = getWxArticleUrl(idValue, pageValue);
+    var response = await http.get(Uri.parse(wxArticleUrl));
+    final statusCode = response.statusCode;
+    final body = response.body;
+    if (statusCode >= 200 && statusCode < 300) {
+      if (body.isNotEmpty) {
+        final jsonResponse = json.decode(body) as Map<String, dynamic>;
+        return ArticleResponse.fromJson(jsonResponse);
       } else {
         throw Exception('Error: $statusCode, Body: $body');
       }

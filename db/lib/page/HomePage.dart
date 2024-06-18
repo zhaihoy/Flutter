@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> {
                 // 设置为true，表示滑动到顶部时隐藏标题
                 snap: true,
                 // 设置为true，表示向下滚动时AppBar会立即展开，向上滚动时立即收缩
-                // flexibleSpace: Placeholder(), 有的像是明星详情页的布局 需要用的flexibleSpace
+                //todo flexibleSpace: Placeholder(), 有的像是明星详情页的布局 需要用的flexibleSpace
                 // 可选的，设置AppBar背景
               )
             ];
