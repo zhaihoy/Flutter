@@ -18,59 +18,24 @@ class _HomePageState extends State<HomePage> {
   final PageController _pageController = PageController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int selectIndex = 0;
-  List<Widget> pageList = <Widget>[];
-  List<ListTile> titleList = <ListTile>[];
-  List<BottomNavigationBarItem> navBar = <BottomNavigationBarItem>[];
-  List<String> titleNameList = ["首页", "公众号", "体系", "广场", "项目"];
+  final List<Widget> pageList = <Widget>[
+    const homePageItem(),
+    const PublicNumberItem(),
+    const SystemPageItem(),
+    const SquarePageItem(),
+    const ProjectPageItem()
+  ];
+  final List<String> titleNameList = ["首页", "公众号", "体系", "广场", "项目"];
 
   @override
   void initState() {
     super.initState();
-    navBar.clear();
-    navBar.add(
-        const BottomNavigationBarItem(icon: Icon(Icons.home), label: "首页"));
-    navBar.add(
-        const BottomNavigationBarItem(icon: Icon(Icons.public), label: "公众号"));
-    navBar.add(const BottomNavigationBarItem(
-        icon: Icon(Icons.settings_system_daydream), label: "体系"));
-    navBar.add(const BottomNavigationBarItem(
-        icon: Icon(Icons.square_rounded), label: "广场"));
-    navBar.add(const BottomNavigationBarItem(
-        icon: Icon(Icons.propane_outlined), label: "项目"));
-    pageList.clear();
-    titleList.clear();
-    //初始化五个页面 首页、公众号、体系、广场、项目
-    pageList.add(const homePageItem());
-    pageList.add(const PublicNumberItem());
-    pageList.add(const SystemPageItem());
-    pageList.add(const SquarePageItem());
-    pageList.add(const ProjectPageItem());
-    titleList.add(const ListTile(
-      leading: Icon(Icons.collections), // 一个用户头像图标作为leading
-      title: Text('收藏'),
-      subtitle: Text('君子藏器于身'),
-    ));
-    titleList.add(const ListTile(
-      leading: Icon(Icons.share), // 一个用户头像图标作为leading
-      title: Text('分享'),
-      subtitle: Text('达则兼济天下'),
-    ));
-    titleList.add(const ListTile(
-      leading: Icon(Icons.settings), // 一个用户头像图标作为leading
-      title: Text('系统'),
-      subtitle: Text('内省吾身'),
-    ));
-    titleList.add(const ListTile(
-      leading: Icon(Icons.collections), // 一个用户头像图标作为leading
-      title: Text('登录'),
-      subtitle: Text('切换角色'),
-    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.top]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top]);
+
     return MaterialApp(
       home: Scaffold(
         key: _scaffoldKey,
@@ -86,12 +51,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 title: const Text('Flutter'),
                 floating: true,
-                // 设置为true，表示滑动到顶部时隐藏标题
                 snap: true,
-                // 设置为true，表示向下滚动时AppBar会立即展开，向上滚动时立即收缩
-                //todo flexibleSpace: Placeholder(), 有的像是明星详情页的布局 需要用的flexibleSpace
-                // 可选的，设置AppBar背景
-              )
+              ),
             ];
           },
           body: PageView(
@@ -100,51 +61,85 @@ class _HomePageState extends State<HomePage> {
             children: pageList,
           ),
         ),
-        drawer: Drawer(
-          child: CustomScrollView(
-            slivers: [
-              const SliverToBoxAdapter(
-                child: DrawContainerHeader(),
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
-                    return Column(
-                      children: [
-                        titleList[index],
-                        if (index < titleList.length - 1) const Divider(),
-                      ],
-                    );
-                  },
-                  childCount: titleList.length,
-                ),
-              ),
-            ],
-          ),
-        ),
+        drawer: _buildDrawer(),
         bottomNavigationBar: BottomNavigationBar(
-          items: navBar,
+          items: _buildNavBarItems(),
           currentIndex: selectIndex,
-          onTap: (index) => _pageController.jumpToPage(index),
-          selectedItemColor: const Color(0xFFFFF8E1),
+          onTap: _onItemTapped,
+          selectedItemColor: Colors.white, // 选中时的文字颜色
           type: BottomNavigationBarType.fixed,
-          // 确保类型为 fixed 否则设置了颜色不生效
           backgroundColor: const Color(0xFF90CAF9), // 设置背景颜色
         ),
       ),
     );
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    _pageController.dispose();
+  List<BottomNavigationBarItem> _buildNavBarItems() {
+    return [
+      BottomNavigationBarItem(
+        icon: Icon(Icons.home, color: selectIndex == 0 ? Colors.white : Colors.grey),
+        label: "首页",
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.public, color: selectIndex == 1 ? Colors.white : Colors.grey),
+        label: "公众号",
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.settings_system_daydream, color: selectIndex == 2 ? Colors.white : Colors.grey),
+        label: "体系",
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.square_rounded, color: selectIndex == 3 ? Colors.white : Colors.grey),
+        label: "广场",
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.propane_outlined, color: selectIndex == 4 ? Colors.white : Colors.grey),
+        label: "项目",
+      ),
+    ];
+  }
+
+  Widget _buildDrawer() {
+    return Drawer(
+      child: CustomScrollView(
+        slivers: [
+          const SliverToBoxAdapter(
+            child: DrawContainerHeader(),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                return Column(
+                  children: [
+                    ListTile(
+                      leading: Icon(
+                        index == 0 ? Icons.collections : index == 1 ? Icons.share : index == 2 ? Icons.settings : Icons.login,
+                      ),
+                      title: Text(index == 0 ? '收藏' : index == 1 ? '分享' : index == 2 ? '系统' : '登录'),
+                      subtitle: Text(index == 0 ? '君子藏器于身' : index == 1 ? '达则兼济天下' : index == 2 ? '内省吾身' : '切换角色'),
+                    ),
+                    if (index < 3) const Divider(),
+                  ],
+                );
+              },
+              childCount: 4,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void _onItemTapped(int index) {
     setState(() {
       selectIndex = index;
     });
+    _pageController.jumpToPage(index);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 }

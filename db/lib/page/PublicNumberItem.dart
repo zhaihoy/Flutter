@@ -1,7 +1,10 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:db/service/ApiService.dart';
 import 'package:db/weight/PagePublicWidget.dart';
 import '../bean/ChapterResponse.dart';
+import '../bean/PageResponseData.dart';
 
 class PublicNumberItem extends StatefulWidget {
   const PublicNumberItem({super.key});
@@ -145,7 +148,8 @@ class _PublicNumberItemState extends State<PublicNumberItem> {
   }
 
   void _scrollToItem(int index) {
-    double offset = (index * 70.0).clamp(0.0, _scrollController.position.maxScrollExtent);
+    double offset =
+    (index * 70.0).clamp(0.0, _scrollController.position.maxScrollExtent);
     _scrollController.animateTo(offset,
         duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
   }

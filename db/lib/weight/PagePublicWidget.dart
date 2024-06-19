@@ -6,8 +6,11 @@ import '../bean/PageResponseData.dart';
 
 class PagePublicWidget extends StatefulWidget {
   final Chapter data;
+  List<Article> items = [];
+  int currentPage = 0;
+  bool _loading = false;
 
-  const PagePublicWidget(this.data);
+  PagePublicWidget(this.data) {}
 
   @override
   State<PagePublicWidget> createState() => _PagePublicWidgetState();
@@ -15,15 +18,14 @@ class PagePublicWidget extends StatefulWidget {
 
 class _PagePublicWidgetState extends State<PagePublicWidget> {
   final ScrollController _scrollController = ScrollController();
-  int currentPage = 0;
-  List<Article> items = [];
-  bool _loading = false;
 
   @override
   void initState() {
     super.initState();
-    _fetchMoreData();
-    _scrollController.addListener(_scrollListener);
+    if (widget.items.isEmpty) {
+      _fetchMoreData();
+      _scrollController.addListener(_scrollListener);
+    }
   }
 
   @override
@@ -40,26 +42,27 @@ class _PagePublicWidgetState extends State<PagePublicWidget> {
   }
 
   Future<void> _fetchMoreData() async {
-    if (_loading) return;
+    if (widget._loading) return;
 
     setState(() {
-      _loading = true;
+      widget._loading = true;
     });
 
     try {
-      var fetchArticleResponse =
-          await ApiService().fetchArticleResponse(widget.data.id, currentPage);
+      var fetchArticleResponse = await ApiService()
+          .fetchArticleResponse(widget.data.id, widget.currentPage);
       setState(() {
+        print("zhy^_^ ApiService ");
         var newData = fetchArticleResponse.data.datas;
-        items.addAll(newData);
-        currentPage++;
-        _loading = false;
+        widget.items.addAll(newData);
+        widget.currentPage++;
+        widget._loading = false;
       });
     } catch (e) {
       // Handle error, e.g., show error message
       print('Error fetching data: $e');
       setState(() {
-        _loading = false;
+        widget._loading = false;
       });
     }
   }
@@ -71,17 +74,17 @@ class _PagePublicWidgetState extends State<PagePublicWidget> {
         Expanded(
           child: ListView.builder(
             controller: _scrollController,
-            itemCount: items.length + 1, // +1 for loading indicator
+            itemCount: widget.items.length + 1, // +1 for loading indicator
             itemBuilder: (context, index) {
-              if (index < items.length) {
-                return ArticleCard(items[index]);
+              if (index < widget.items.length) {
+                return ArticleCard(widget.items[index]);
               } else {
                 return _buildProgressIndicator();
               }
             },
           ),
         ),
-        if (_loading) _buildProgressIndicator(),
+        if (widget._loading) _buildProgressIndicator(),
       ],
     );
   }
