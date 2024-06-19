@@ -104,5 +104,9 @@ flutter:
     - family: FZLanTingHeiS
       fonts:
         - asset: assets/fonts/FZLanTingHeiS_Regulars.TTF
+    - family: FZLanTingHeiS2
+      fonts:
         - asset: assets/fonts/FZLanTingHeiS_Regular.TTF
+    - family: FZLanTingHeiS3
+      fonts:
         - asset: assets/fonts/FZLanTingHeiS_Lobster.otf

@@ -24,8 +24,8 @@ class _PagePublicWidgetState extends State<PagePublicWidget> {
     super.initState();
     if (widget.items.isEmpty) {
       _fetchMoreData();
-      _scrollController.addListener(_scrollListener);
     }
+    _scrollController.addListener(_scrollListener);
   }
 
   @override
@@ -69,6 +69,7 @@ class _PagePublicWidgetState extends State<PagePublicWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print("zhy" + widget._loading.toString());
     return Column(
       children: <Widget>[
         Expanded(
