@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 
 void main() {
   ARoute.initARoute();
-  print("zhy^_^ initARoute");
   runApp(const MyApp());
 }
 
