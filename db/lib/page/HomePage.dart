@@ -20,8 +20,8 @@ class _HomePageState extends State<HomePage>
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int selectIndex = 0;
   final List<Widget> pageList = <Widget>[
-    const homePageItem(),
-    const PublicNumberItem(),
+    homePageItem(),
+    PublicNumberItem(),
     const SystemPageItem(),
     const SquarePageItem(),
     const ProjectPageItem()

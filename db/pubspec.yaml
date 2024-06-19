@@ -37,6 +37,7 @@ dependencies:
   carousel_slider: ^4.0.0   # Banner
   smooth_page_indicator: ^1.0.0 # 指示器
   webview_flutter: ^3.0.0 #WebView
+  shared_preferences: ^2.0.8
 
 
   # The following adds the Cupertino Icons fonts to your application.

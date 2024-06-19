@@ -10,7 +10,7 @@ class PagePublicWidget extends StatefulWidget {
   int currentPage = 0;
   bool _loading = false;
 
-  PagePublicWidget(this.data) {}
+  PagePublicWidget(this.data);
 
   @override
   State<PagePublicWidget> createState() => _PagePublicWidgetState();
@@ -69,7 +69,6 @@ class _PagePublicWidgetState extends State<PagePublicWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print("zhy" + widget._loading.toString());
     return Column(
       children: <Widget>[
         Expanded(

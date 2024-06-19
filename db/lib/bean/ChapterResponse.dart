@@ -52,6 +52,25 @@ class Chapter {
       visible: json['visible'],
     );
   }
+  Map<String, dynamic> toJson() {
+    return {
+      'articleList': articleList,
+      'author': author,
+      'children': children,
+      'courseId': courseId,
+      'cover': cover,
+      'desc': desc,
+      'id': id,
+      'lisense': lisense,
+      'lisenseLink': lisenseLink,
+      'name': name,
+      'order': order,
+      'parentChapterId': parentChapterId,
+      'type': type,
+      'userControlSetTop': userControlSetTop,
+      'visible': visible,
+    };
+  }
 }
 
 class ChapterResponse {
@@ -74,5 +93,12 @@ class ChapterResponse {
       errorCode: json['errorCode'],
       errorMsg: json['errorMsg'],
     );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'data': data.map((chapter) => chapter.toJson()).toList(),
+      'errorCode': errorCode,
+      'errorMsg': errorMsg,
+    };
   }
 }

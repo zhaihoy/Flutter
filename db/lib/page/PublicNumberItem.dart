@@ -7,80 +7,106 @@ import '../bean/ChapterResponse.dart';
 import '../bean/PageResponseData.dart';
 
 class PublicNumberItem extends StatefulWidget {
-  const PublicNumberItem({super.key});
-
-  @override
-  State<PublicNumberItem> createState() => _PublicNumberItemState();
-}
-
-class _PublicNumberItemState extends State<PublicNumberItem> {
-  late PageController _pageController;
-  late ScrollController _scrollController;
   final List<String> _titles = [];
   final List<Widget> _children = [];
   bool _isLoading = true;
   bool _isError = false;
   bool _isDataLoaded = false;
   int _selectedIndex = 0;
+  Map<int, ChapterResponse> _cache = {};
+  PublicNumberItem({super.key});
+
+  @override
+  State<PublicNumberItem> createState() => _PublicNumberItemState();
+}
+
+class _PublicNumberItemState extends State<PublicNumberItem> {
+  // Cache map to store fetched data
+  late PageController _pageController;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
     _scrollController = ScrollController();
-    if (!_isDataLoaded) {
+    if (!widget._isDataLoaded) {
       _fetchData();
     }
   }
 
   Future<void> _fetchData() async {
     try {
-      ChapterResponse fetchPagePublicNumberItemData =
-      await ApiService().fetchPagePublicNumberItemData();
-      if (fetchPagePublicNumberItemData.data.isNotEmpty) {
+      // Check if data is cached
+      if (widget._cache.containsKey(widget._selectedIndex)) {
         setState(() {
-          _titles.clear();
-          _children.clear();
-          for (var data in fetchPagePublicNumberItemData.data) {
-            _titles.add(data.name);
-            _children.add(PagePublicWidget(data));
-          }
-          _isDataLoaded = true;
-          _isLoading = false;
-          _isError = false;
+          _updateUIWithCachedData(widget._selectedIndex);
         });
       } else {
-        setState(() {
-          _isLoading = false;
-          _isError = true;
-        });
+        // Fetch data from network if not cached
+        ChapterResponse fetchPagePublicNumberItemData =
+            await ApiService().fetchPagePublicNumberItemData();
+        if (fetchPagePublicNumberItemData.data.isNotEmpty) {
+          setState(() {
+            widget._cache[widget._selectedIndex] =
+                fetchPagePublicNumberItemData;
+            _updateUIWithCachedData(widget._selectedIndex);
+          });
+        } else {
+          setState(() {
+            widget._isLoading = false;
+            widget._isError = true;
+          });
+        }
       }
     } catch (e) {
       setState(() {
-        _isError = true;
-        _isLoading = false;
+        widget._isError = true;
+        widget._isLoading = false;
       });
     }
   }
 
+  // Method to update UI with cached data
+  void _updateUIWithCachedData(int index) {
+    var cachedData = widget._cache[index]!;
+    widget._titles.clear();
+    widget._children.clear();
+    for (var data in cachedData.data) {
+      widget._titles.add(data.name);
+      widget._children.add(PagePublicWidget(data));
+    }
+    widget._isDataLoaded = true;
+    widget._isLoading = false;
+    widget._isError = false;
+  }
+
   @override
   void dispose() {
-    _pageController.dispose();
-    _scrollController.dispose();
+    print('zhy _PublicNumberItemState.dispose');
+    // _pageController.dispose();
+    // _scrollController.dispose();
     super.dispose();
   }
 
   void _onButtonPressed(int index) {
     setState(() {
-      _selectedIndex = index;
+      widget._selectedIndex = index;
     });
     _pageController.animateToPage(index,
         duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
   }
 
+  void _scrollToItem(int index) {
+    double offset =
+        (index * 70.0).clamp(0.0, _scrollController.position.maxScrollExtent);
+    _scrollController.animateTo(offset,
+        duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
+    if (widget._isLoading) {
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
@@ -88,7 +114,7 @@ class _PublicNumberItemState extends State<PublicNumberItem> {
       );
     }
 
-    if (_isError) {
+    if (widget._isError) {
       return const Scaffold(
         body: Center(
           child: Text('Failed to load data'),
@@ -104,20 +130,20 @@ class _PublicNumberItemState extends State<PublicNumberItem> {
             child: ListView.builder(
               controller: _scrollController,
               scrollDirection: Axis.horizontal,
-              itemCount: _titles.length,
+              itemCount: widget._titles.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () => _onButtonPressed(index),
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     alignment: Alignment.center,
-                    color: _selectedIndex == index
+                    color: widget._selectedIndex == index
                         ? Colors.blue[200]
                         : Colors.teal[300],
                     child: Text(
-                      _titles[index],
+                      widget._titles[index],
                       style: TextStyle(
-                        color: _selectedIndex == index
+                        color: widget._selectedIndex == index
                             ? Colors.white
                             : Colors.black,
                       ),
@@ -130,27 +156,20 @@ class _PublicNumberItemState extends State<PublicNumberItem> {
           Expanded(
             child: PageView.builder(
               controller: _pageController,
-              itemCount: _children.length,
+              itemCount: widget._children.length,
               onPageChanged: (index) {
                 setState(() {
-                  _selectedIndex = index;
+                  widget._selectedIndex = index;
                 });
                 _scrollToItem(index);
               },
               itemBuilder: (context, index) {
-                return _children[index];
+                return widget._children[index];
               },
             ),
           ),
         ],
       ),
     );
-  }
-
-  void _scrollToItem(int index) {
-    double offset =
-    (index * 70.0).clamp(0.0, _scrollController.position.maxScrollExtent);
-    _scrollController.animateTo(offset,
-        duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
   }
 }

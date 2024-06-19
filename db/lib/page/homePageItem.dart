@@ -7,17 +7,19 @@ import 'package:db/widget/BannerWidget.dart';
 import 'package:flutter/material.dart';
 
 class homePageItem extends StatefulWidget {
-  const homePageItem({super.key});
+  List<Article> items = [];
+  int page = 0;
+  bool isLoading = false;
+  bool reachedEnd = false;
+
+  homePageItem({super.key});
 
   @override
   State<homePageItem> createState() => _homePageItemState();
 }
 
 class _homePageItemState extends State<homePageItem> {
-  List<Article> items = [];
-  int page = 0;
-  bool isLoading = false;
-  bool reachedEnd = false;
+  bool reBuild = false;
   final ScrollController _scrollController = ScrollController();
 
   // SliverToBoxAdapter 和 SliverList
@@ -47,10 +49,10 @@ class _homePageItemState extends State<homePageItem> {
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  if (index < items.length) {
-                    return ArticleCard(items[index]);
+                  if (index < widget.items.length) {
+                    return ArticleCard(widget.items[index]);
                   } else {
-                    if (reachedEnd) {
+                    if (widget.reachedEnd) {
                       return const Padding(
                         padding: EdgeInsets.symmetric(vertical: 32.0),
                         child: Center(child: Text('已加载完所有数据')),
@@ -68,7 +70,7 @@ class _homePageItemState extends State<homePageItem> {
                   }
                 },
                 // 计算列表项数量，包括加载指示器或已加载完所有数据的文本
-                childCount: items.length + 1,
+                childCount: widget.items.length + 1,
               ),
             ),
           ],
@@ -87,7 +89,7 @@ class _homePageItemState extends State<homePageItem> {
   @override
   void initState() {
     super.initState();
-
+    reBuild = true;
     // 添加滚动监听器
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
@@ -95,56 +97,58 @@ class _homePageItemState extends State<homePageItem> {
         _loadMore();
       }
     });
-    _refresh();
+    if (widget.items.isEmpty) {
+      _refresh();
+    }
   }
 
   Future<void> _refresh() async {
-    if (isLoading) return;
+    if (widget.isLoading) return;
     setState(() {
-      isLoading = true;
+      widget.isLoading = true;
     });
     try {
       PagePageResponseData responsePopularData =
           await ApiService().fetchPageTopData();
       List<Article> responsePopularDataItems = responsePopularData.data.datas;
-      items.clear();
-      items.addAll(responsePopularDataItems);
+      widget.items.clear();
+      widget.items.addAll(responsePopularDataItems);
       // 1. 调用 ApiService().fetchPagedData(page) 获取数据 刷新一般都是刷第一页数据
       PagePageResponseData responseData = await ApiService().fetchPagedData(0);
       // 2. 解析响应数据
       List<Article> newItems = responseData.data.datas;
-      items.addAll(newItems);
-      reachedEnd = items.isEmpty;
+      widget.items.addAll(newItems);
+      widget.reachedEnd = widget.items.isEmpty;
     } catch (e) {
       print(e);
     } finally {
       setState(() {
-        isLoading = false;
-        items;
+        widget.isLoading = false;
+        widget.items;
       });
     }
   }
 
 //上拉加载更多需要配合SliverList  进行监听
   Future<void> _loadMore() async {
-    if (isLoading) return;
+    if (widget.isLoading) return;
     setState(() {
-      isLoading = true;
+      widget.isLoading = true;
     });
     try {
       // 1. 调用 ApiService().fetchPagedData(page) 获取数据 刷新一般都是刷第一页数据
-      page++;
+      widget.page++;
       PagePageResponseData responseData =
-          await ApiService().fetchPagedData(page);
+          await ApiService().fetchPagedData(widget.page);
       // 2. 解析响应数据
       List<Article> newItems = responseData.data.datas;
-      items.addAll(newItems);
-      reachedEnd = items.isEmpty;
+      widget.items.addAll(newItems);
+      widget.reachedEnd = widget.items.isEmpty;
     } catch (e) {
     } finally {
       setState(() {
-        isLoading = false;
-        items;
+        widget.isLoading = false;
+        widget.items;
       });
     }
   }
