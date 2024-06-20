@@ -1,7 +1,7 @@
 class Chapter {
   List<dynamic> articleList;
   String author;
-  List<dynamic> children;
+  late List<Chapter> children;
   int courseId;
   String cover;
   String desc;
@@ -37,7 +37,7 @@ class Chapter {
     return Chapter(
       articleList: json['articleList'],
       author: json['author'],
-      children: json['children'].map((e) => Chapter.fromJson(e)).toList(),
+      children: List<Chapter>.from((json['children'] ?? []).map((x) => Chapter.fromJson(x))),
       courseId: json['courseId'],
       cover: json['cover'],
       desc: json['desc'],
@@ -57,7 +57,7 @@ class Chapter {
     return {
       'articleList': articleList,
       'author': author,
-      'children': children,
+      'children': List<dynamic>.from(children.map((x) => x.toJson())),
       'courseId': courseId,
       'cover': cover,
       'desc': desc,
@@ -75,9 +75,9 @@ class Chapter {
 }
 
 class ChapterResponse {
-  List<Chapter> data;
-  int errorCode;
-  String errorMsg;
+  late List<Chapter> data;
+  late int errorCode;
+  late String errorMsg;
 
   ChapterResponse({
     required this.data,
@@ -86,11 +86,8 @@ class ChapterResponse {
   });
 
   factory ChapterResponse.fromJson(Map<String, dynamic> json) {
-    var dataList = json['data'] as List;
-    List<Chapter> chapters = dataList.map((e) => Chapter.fromJson(e)).toList();
-
     return ChapterResponse(
-      data: chapters,
+      data: List<Chapter>.from((json['data'] ?? []).map((x) => Chapter.fromJson(x))),
       errorCode: json['errorCode'],
       errorMsg: json['errorMsg'],
     );
@@ -98,7 +95,7 @@ class ChapterResponse {
 
   Map<String, dynamic> toJson() {
     return {
-      'data': data.map((chapter) => chapter.toJson()).toList(),
+      'data': List<dynamic>.from(data.map((x) => x.toJson())),
       'errorCode': errorCode,
       'errorMsg': errorMsg,
     };

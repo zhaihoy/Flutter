@@ -7,7 +7,7 @@ import '../bean/PageResponseData.dart';
 class PagePublicWidget extends StatefulWidget {
   final Chapter data;
   List<Article> items = [];
-  int currentPage = 0;
+  int currentPage = 1;
   bool _loading = false;
 
   PagePublicWidget(this.data);

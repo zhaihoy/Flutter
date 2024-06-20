@@ -1,8 +1,7 @@
-import 'package:db/weight/SystemItemCard.dart';
 import 'package:flutter/material.dart';
-
 import '../bean/ChapterResponse.dart';
 import '../service/ApiService.dart';
+import '../weight/SystemItemCard.dart';
 
 class SystemItemOneWidget extends StatefulWidget {
   const SystemItemOneWidget({super.key});
@@ -13,16 +12,8 @@ class SystemItemOneWidget extends StatefulWidget {
 
 class _SystemItemOneWidgetState extends State<SystemItemOneWidget> {
   List<Chapter> data = [];
-
-  @override
-  Widget build(BuildContext context) {
-    print("zhy^_^ " + data.length.toString());
-    return ListView.builder(
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          return SystemItemCard();
-        });
-  }
+  bool isLoading = true;
+  bool hasError = false;
 
   @override
   void initState() {
@@ -31,8 +22,39 @@ class _SystemItemOneWidgetState extends State<SystemItemOneWidget> {
   }
 
   Future<void> _fetchItemData() async {
-    var fetchPageSysItemData = await ApiService().fetchPageSysItemData();
-    data.clear();
-    data.addAll(fetchPageSysItemData.data);
+    try {
+      var fetchPageSysItemData = await ApiService().fetchPageSysItemData();
+      debugPrint("Data length: ${fetchPageSysItemData.data.length}");
+      setState(() {
+        data.clear();
+        data.addAll(fetchPageSysItemData.data);
+        isLoading = false;
+      });
+    } catch (e) {
+      debugPrint("Error fetching data: $e");
+      setState(() {
+        isLoading = false;
+        hasError = true;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    if (hasError) {
+      return Center(child: Text('Error loading data.'));
+    }
+
+    return ListView.builder(
+      itemCount: data.length,
+      itemBuilder: (context, index) {
+        return SystemItemCard(data[index]);
+        // return Text(data[index]);
+      },
+    );
   }
 }
