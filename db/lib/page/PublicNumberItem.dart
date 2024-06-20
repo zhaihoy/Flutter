@@ -28,7 +28,7 @@ class _PublicNumberItemState extends State<PublicNumberItem> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _pageController = PageController(initialPage: widget._selectedIndex);
     _scrollController = ScrollController();
     if (!widget._isDataLoaded) {
       _fetchData();
@@ -106,13 +106,6 @@ class _PublicNumberItemState extends State<PublicNumberItem> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget._isLoading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
 
     if (widget._isError) {
       return const Scaffold(

@@ -37,7 +37,7 @@ class Chapter {
     return Chapter(
       articleList: json['articleList'],
       author: json['author'],
-      children: json['children'],
+      children: json['children'].map((e) => Chapter.fromJson(e)).toList(),
       courseId: json['courseId'],
       cover: json['cover'],
       desc: json['desc'],
@@ -52,6 +52,7 @@ class Chapter {
       visible: json['visible'],
     );
   }
+
   Map<String, dynamic> toJson() {
     return {
       'articleList': articleList,
@@ -94,6 +95,7 @@ class ChapterResponse {
       errorMsg: json['errorMsg'],
     );
   }
+
   Map<String, dynamic> toJson() {
     return {
       'data': data.map((chapter) => chapter.toJson()).toList(),

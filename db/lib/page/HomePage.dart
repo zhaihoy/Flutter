@@ -19,16 +19,25 @@ class _HomePageState extends State<HomePage>
   final PageController _pageController = PageController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int selectIndex = 0;
-  final List<Widget> pageList = <Widget>[
-    homePageItem(),
-    PublicNumberItem(),
-    const SystemPageItem(),
-    const SquarePageItem(),
-    const ProjectPageItem()
-  ];
+
   final List<String> titleNameList = ["首页", "公众号", "体系", "广场", "项目"];
   late AnimationController _controller;
   late Animation<double> _animation;
+  Color _backgroundColor = Colors.white;
+
+  ///动态调整
+  void _changeBackgroundColor(Color color) {
+    setState(() {
+      _backgroundColor = color;
+    });
+  }
+  final List<Widget> pageList = <Widget>[
+    homePageItem(),
+    PublicNumberItem(),
+    SystemPageItem(),
+    const SquarePageItem(),
+    const ProjectPageItem()
+  ];
 
   @override
   void initState() {
@@ -61,6 +70,7 @@ class _HomePageState extends State<HomePage>
       home: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
+          backgroundColor: Colors.blue[100],
           title: SlideTransition(
             position: Tween<Offset>(
               begin: Offset.zero,

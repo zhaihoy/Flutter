@@ -11,7 +11,7 @@ import 'ApiConstants.dart';
 class ApiService {
   final String baseUrl;
   static final ApiService _instance =
-      ApiService._internal(ApiConstants.baseUrl);
+  ApiService._internal(ApiConstants.baseUrl);
 
   // 私有构造函数
   ApiService._internal(this.baseUrl);
@@ -82,7 +82,7 @@ class ApiService {
 
   Future<PagePageResponseData> fetchPagedData(int page) async {
     final response =
-        await http.get(Uri.parse('$baseUrl${"article/list/"}$page/json'));
+    await http.get(Uri.parse('$baseUrl${"article/list/"}$page/json'));
     final statusCode = response.statusCode;
     final body = response.body;
     if (statusCode >= 200 && statusCode < 300) {
@@ -113,9 +113,7 @@ class ApiService {
     }
   }
 
-  /**
-   * 请求公众号列表
-   */
+  /// 请求公众号列表
   Future<ChapterResponse> fetchPagePublicNumberItemData() async {
     final response = await http
         .get(Uri.parse(baseUrl + ApiConstants.WXARTICLE_CHAPTERS_LIST));
@@ -141,9 +139,56 @@ class ApiService {
             .replaceAll('{page}', page.toString());
   }
 
-  Future<ArticleResponse> fetchArticleResponse(
-      int idValue, int pageValue) async {
+  ///公众号文章列表
+  Future<ArticleResponse> fetchArticleResponse(int idValue,
+      int pageValue) async {
+    print("zhy pageValue" + pageValue.toString());
     var wxArticleUrl = getWxArticleUrl(idValue, pageValue);
+    var response = await http.get(Uri.parse(wxArticleUrl));
+    final statusCode = response.statusCode;
+    final body = response.body;
+    if (statusCode >= 200 && statusCode < 300) {
+      if (body.isNotEmpty) {
+        final jsonResponse = json.decode(body) as Map<String, dynamic>;
+        return ArticleResponse.fromJson(jsonResponse);
+      } else {
+        throw Exception('Error: $statusCode, Body: $body');
+      }
+    } else {
+      throw Exception('Error: $statusCode, Body: $body');
+    }
+  }
+
+  /// cid 查看该目录下所有文章时有用
+  /// page 页码
+  String getArticleUrl(int cid, int page) {
+    // 使用字符串插值来动态替换参数
+    return baseUrl +
+        ApiConstants.SYS_DEATIL_LIST
+            .replaceAll('{cid}', cid.toString())
+            .replaceAll('{page}', page.toString());
+  }
+
+  /// 请求体系列表
+  Future<ChapterResponse> fetchPageSysItemData() async {
+    final response = await http.get(Uri.parse(baseUrl + ApiConstants.SYS_LIST));
+    final statusCode = response.statusCode;
+    final body = response.body;
+    if (statusCode >= 200 && statusCode < 300) {
+      if (body.isNotEmpty) {
+        final jsonResponse = json.decode(body) as Map<String, dynamic>;
+        return ChapterResponse.fromJson(jsonResponse);
+      } else {
+        throw Exception('Error: $statusCode, Body: $body');
+      }
+    } else {
+      throw Exception('Error: $statusCode, Body: $body');
+    }
+  }
+
+  ///体系文章列表
+  Future<ArticleResponse> fetchSysResponse(int idValue, int pageValue) async {
+    var wxArticleUrl = getArticleUrl(idValue, pageValue);
     var response = await http.get(Uri.parse(wxArticleUrl));
     final statusCode = response.statusCode;
     final body = response.body;
