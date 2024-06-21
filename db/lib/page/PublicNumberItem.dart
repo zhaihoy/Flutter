@@ -14,13 +14,15 @@ class PublicNumberItem extends StatefulWidget {
   bool _isDataLoaded = false;
   int _selectedIndex = 0;
   Map<int, ChapterResponse> _cache = {};
+
   PublicNumberItem({super.key});
 
   @override
   State<PublicNumberItem> createState() => _PublicNumberItemState();
 }
 
-class _PublicNumberItemState extends State<PublicNumberItem> {
+class _PublicNumberItemState extends State<PublicNumberItem>
+    with AutomaticKeepAliveClientMixin {
   // Cache map to store fetched data
   late PageController _pageController;
   late ScrollController _scrollController;
@@ -106,7 +108,6 @@ class _PublicNumberItemState extends State<PublicNumberItem> {
 
   @override
   Widget build(BuildContext context) {
-
     if (widget._isError) {
       return const Scaffold(
         body: Center(
@@ -165,4 +166,7 @@ class _PublicNumberItemState extends State<PublicNumberItem> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

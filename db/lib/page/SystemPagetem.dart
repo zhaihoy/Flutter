@@ -15,7 +15,8 @@ class SystemPageItem extends StatefulWidget {
   State<SystemPageItem> createState() => _SystemPageItemState();
 }
 
-class _SystemPageItemState extends State<SystemPageItem> {
+class _SystemPageItemState extends State<SystemPageItem>
+    with AutomaticKeepAliveClientMixin {
   late ScrollController scrollController;
   List<Widget> title = [
     const Tab(
@@ -98,4 +99,8 @@ class _SystemPageItemState extends State<SystemPageItem> {
       });
     }
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

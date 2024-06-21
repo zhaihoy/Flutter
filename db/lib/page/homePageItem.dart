@@ -18,7 +18,8 @@ class homePageItem extends StatefulWidget {
   State<homePageItem> createState() => _homePageItemState();
 }
 
-class _homePageItemState extends State<homePageItem> {
+class _homePageItemState extends State<homePageItem>
+    with AutomaticKeepAliveClientMixin {
   bool reBuild = false;
   final ScrollController _scrollController = ScrollController();
 
@@ -152,4 +153,8 @@ class _homePageItemState extends State<homePageItem> {
       });
     }
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
