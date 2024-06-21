@@ -5,8 +5,8 @@ class SystemItemCard extends StatefulWidget {
   final Chapter data;
   bool _isInitialized = false;
 
-  SystemItemCard(this.data){
-  }
+  SystemItemCard(this.data);
+
   @override
   _SystemItemCardState createState() => _SystemItemCardState();
 }
@@ -18,7 +18,6 @@ class _SystemItemCardState extends State<SystemItemCard> {
     // Add a post-frame callback to ensure the widget has been rendered
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!widget._isInitialized) {
-        print("zhy^_^_isInitialized  ");
         widget._isInitialized = true;
       }
     });

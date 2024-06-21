@@ -3,7 +3,13 @@ import 'package:db/service/ApiService.dart';
 import 'package:flutter/material.dart';
 
 class SystemPageItem extends StatefulWidget {
-  const SystemPageItem({super.key});
+  List<Widget> pageList = [];
+  bool isLoading = true;
+  bool hasError = false;
+
+  SystemPageItem({super.key}) {
+    print("zhy^_^>>> SystemPageItem");
+  }
 
   @override
   State<SystemPageItem> createState() => _SystemPageItemState();
@@ -22,16 +28,20 @@ class _SystemPageItemState extends State<SystemPageItem> {
       child: Text("导航", style: TextStyle(color: Colors.white)),
     )
   ];
-  List<Widget> pageList = [];
-
-  bool isLoading = true;
-  bool hasError = false;
 
   @override
   void initState() {
+    ///所谓的重复加载是指的是数据—get from net->
+    ///而不是页面的渲染
     super.initState();
-    scrollController = ScrollController();
-    _fetchItemData();
+    if (widget.pageList.isEmpty) {
+      scrollController = ScrollController();
+      _fetchItemData();
+    } else {
+      setState(() {
+        widget.pageList;
+      });
+    }
   }
 
   @override
@@ -58,11 +68,11 @@ class _SystemPageItemState extends State<SystemPageItem> {
               ),
             ),
             Expanded(
-              child: isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : hasError
-                      ? Center(child: Text('Error loading data.'))
-                      : TabBarView(children: pageList),
+              child: widget.isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : widget.hasError
+                      ? const Center(child: Text('Error loading data.'))
+                      : TabBarView(children: widget.pageList),
             ),
           ],
         ),
@@ -74,17 +84,17 @@ class _SystemPageItemState extends State<SystemPageItem> {
     try {
       var fetchPageSysItemData = await ApiService().fetchPageSysItemData();
       setState(() {
-        pageList = [
+        widget.pageList = [
           SystemItemOneWidget(fetchPageSysItemData.data),
           SystemItemOneWidget(fetchPageSysItemData.data),
         ];
-        isLoading = false;
+        widget.isLoading = false;
       });
     } catch (e) {
       debugPrint("Error fetching data: $e");
       setState(() {
-        isLoading = false;
-        hasError = true;
+        widget.isLoading = false;
+        widget.hasError = true;
       });
     }
   }
