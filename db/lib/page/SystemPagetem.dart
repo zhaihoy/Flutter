@@ -1,4 +1,5 @@
 import 'package:db/page/SystemItemOneWidget.dart';
+import 'package:db/page/SystemItemTwoWidget.dart';
 import 'package:db/service/ApiService.dart';
 import 'package:flutter/material.dart';
 
@@ -84,10 +85,11 @@ class _SystemPageItemState extends State<SystemPageItem>
   Future<void> _fetchItemData() async {
     try {
       var fetchPageSysItemData = await ApiService().fetchPageSysItemData();
+      var fetchPageSysData =  await ApiService().fetchPagedNavigation();
       setState(() {
         widget.pageList = [
           SystemItemOneWidget(fetchPageSysItemData.data),
-          SystemItemOneWidget(fetchPageSysItemData.data),
+          // SystemItemTwoWidget(fetchPageSysData.data),
         ];
         widget.isLoading = false;
       });

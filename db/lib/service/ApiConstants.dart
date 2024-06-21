@@ -5,5 +5,6 @@ class ApiConstants {
   static const String WXARTICLE_CHAPTERS_LIST = "wxarticle/chapters/json";
   static const String WXARTICLE_LIST = "wxarticle/list/{id}/{page}/json";
   static const String SYS_LIST = "tree/json";
+  static const String SYS_NAVI_LIST = "navi/json";
   static const String SYS_DEATIL_LIST = "article/list/{page}/json?cid={cid}";
 }

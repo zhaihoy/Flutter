@@ -1,19 +1,3 @@
-# db
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
 
 Flutter 面试通常涉及以下几个主要知识点：
 
@@ -54,5 +38,3 @@ Flutter 面试通常涉及以下几个主要知识点：
 
 10. **版本管理和发布**：
     - Flutter 应用程序的版本管理和发布流程。
-
-在面试中，除了这些技术知识外，还应该准备一些项目经验的介绍，展示你在实际项目中如何应用这些知识解决问题。此外，理解 Flutter 的工作原理和底层机制也是加分项，可以让面试官感觉你对整个框架有更深入的理解。

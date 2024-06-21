@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:db/bean/PageResponseData.dart';
 import 'package:http/http.dart' as http;
 
+import '../bean/Article.dart';
 import '../bean/ArticleResponse.dart';
 import '../bean/ChapterResponse.dart';
 import '../bean/ResponseData.dart';
@@ -11,7 +12,7 @@ import 'ApiConstants.dart';
 class ApiService {
   final String baseUrl;
   static final ApiService _instance =
-  ApiService._internal(ApiConstants.baseUrl);
+      ApiService._internal(ApiConstants.baseUrl);
 
   // 私有构造函数
   ApiService._internal(this.baseUrl);
@@ -82,7 +83,7 @@ class ApiService {
 
   Future<PagePageResponseData> fetchPagedData(int page) async {
     final response =
-    await http.get(Uri.parse('$baseUrl${"article/list/"}$page/json'));
+        await http.get(Uri.parse('$baseUrl${"article/list/"}$page/json'));
     final statusCode = response.statusCode;
     final body = response.body;
     if (statusCode >= 200 && statusCode < 300) {
@@ -140,9 +141,8 @@ class ApiService {
   }
 
   ///公众号文章列表
-  Future<ArticleResponse> fetchArticleResponse(int idValue,
-      int pageValue) async {
-    print("zhy pageValue" + pageValue.toString());
+  Future<ArticleResponse> fetchArticleResponse(
+      int idValue, int pageValue) async {
     var wxArticleUrl = getWxArticleUrl(idValue, pageValue);
     var response = await http.get(Uri.parse(wxArticleUrl));
     final statusCode = response.statusCode;
@@ -196,6 +196,23 @@ class ApiService {
       if (body.isNotEmpty) {
         final jsonResponse = json.decode(body) as Map<String, dynamic>;
         return ArticleResponse.fromJson(jsonResponse);
+      } else {
+        throw Exception('Error: $statusCode, Body: $body');
+      }
+    } else {
+      throw Exception('Error: $statusCode, Body: $body');
+    }
+  }
+
+  Future<SysResponseData> fetchPagedNavigation() async {
+    final response =
+        await http.get(Uri.parse(baseUrl + ApiConstants.SYS_NAVI_LIST));
+    final statusCode = response.statusCode;
+    final body = response.body;
+    if (statusCode >= 200 && statusCode < 300) {
+      if (body.isNotEmpty) {
+        final jsonResponse = json.decode(body) as Map<String, dynamic>;
+        return SysResponseData.fromJson(jsonResponse);
       } else {
         throw Exception('Error: $statusCode, Body: $body');
       }
