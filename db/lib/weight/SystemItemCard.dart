@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
 import '../bean/ChapterResponse.dart';
 
-class SystemItemCard extends StatelessWidget {
+class SystemItemCard extends StatefulWidget {
   final Chapter data;
+  bool _isInitialized = false;
 
-  SystemItemCard(this.data);
+  SystemItemCard(this.data){
+  }
+  @override
+  _SystemItemCardState createState() => _SystemItemCardState();
+}
+
+class _SystemItemCardState extends State<SystemItemCard> {
+  @override
+  void initState() {
+    super.initState();
+    // Add a post-frame callback to ensure the widget has been rendered
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!widget._isInitialized) {
+        print("zhy^_^_isInitialized  ");
+        widget._isInitialized = true;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,30 +46,24 @@ class SystemItemCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      data.name,
+                      widget.data.name,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                         fontSize: 16,
                       ),
                     ),
                     SizedBox(height: 10),
-                    Container(
-                      width: MediaQuery.of(context).size.width, // 或者其他具体的宽度
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: data.children.length,
-                        itemBuilder: (context, index) {
-                          final childName =
-                              data.children[index].name ?? "无了";
-                          return Chip(
-                            label: Text(childName),
-                            backgroundColor: Colors.blue,
-                            labelStyle: TextStyle(color: Colors.white),
-                          );
-                        },
-                      ),
-                    )
+                    Wrap(
+                      spacing: 8.0, // 每个chip之间的水平间距
+                      runSpacing: 4.0, // 每行之间的垂直间距
+                      children: widget.data.children.map((child) {
+                        return Chip(
+                          label: Text(child.name),
+                          backgroundColor: Colors.blue,
+                          labelStyle: TextStyle(color: Colors.white),
+                        );
+                      }).toList(),
+                    ),
                   ],
                 ),
               ),

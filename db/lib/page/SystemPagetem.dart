@@ -6,11 +6,11 @@ class SystemPageItem extends StatefulWidget {
   const SystemPageItem({super.key});
 
   @override
-  State<SystemPageItem> createState() => _PageItemState();
+  State<SystemPageItem> createState() => _SystemPageItemState();
 }
 
-class _PageItemState extends State<SystemPageItem> {
-  var scrollController;
+class _SystemPageItemState extends State<SystemPageItem> {
+  late ScrollController scrollController;
   List<Widget> title = [
     const Tab(
       child: Text(
@@ -22,23 +22,27 @@ class _PageItemState extends State<SystemPageItem> {
       child: Text("导航", style: TextStyle(color: Colors.white)),
     )
   ];
-  List<Widget> pageList = [SystemItemOneWidget(),SystemItemOneWidget()];
+  List<Widget> pageList = [];
+
+  bool isLoading = true;
+  bool hasError = false;
 
   @override
   void initState() {
     super.initState();
     scrollController = ScrollController();
+    _fetchItemData();
   }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: title.length, // 设置 Tab 的数量
+      length: title.length,
       child: Scaffold(
         body: Column(
           children: <Widget>[
             Container(
-              color: Colors.blue[100], // 设置背景颜色以区分
+              color: Colors.blue[100],
               child: TabBar(
                 tabs: title,
                 labelColor: Colors.white,
@@ -53,14 +57,35 @@ class _PageItemState extends State<SystemPageItem> {
                 ),
               ),
             ),
-             Expanded(
-              child: TabBarView(
-                children:pageList
-              ),
+            Expanded(
+              child: isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : hasError
+                      ? Center(child: Text('Error loading data.'))
+                      : TabBarView(children: pageList),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _fetchItemData() async {
+    try {
+      var fetchPageSysItemData = await ApiService().fetchPageSysItemData();
+      setState(() {
+        pageList = [
+          SystemItemOneWidget(fetchPageSysItemData.data),
+          SystemItemOneWidget(fetchPageSysItemData.data),
+        ];
+        isLoading = false;
+      });
+    } catch (e) {
+      debugPrint("Error fetching data: $e");
+      setState(() {
+        isLoading = false;
+        hasError = true;
+      });
+    }
   }
 }
