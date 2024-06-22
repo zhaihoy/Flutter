@@ -41,9 +41,13 @@ class _PublicNumberItemState extends State<PublicNumberItem>
     try {
       // Check if data is cached
       if (widget._cache.containsKey(widget._selectedIndex)) {
-        setState(() {
-          _updateUIWithCachedData(widget._selectedIndex);
-        });
+        if(widget._cache[widget._selectedIndex]==null){
+          print("zhy^_^ "+widget._selectedIndex.toString());
+        }else{
+          setState(() {
+            _updateUIWithCachedData(widget._selectedIndex);
+          });
+        }
       } else {
         // Fetch data from network if not cached
         ChapterResponse fetchPagePublicNumberItemData =

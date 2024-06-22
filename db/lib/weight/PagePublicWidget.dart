@@ -52,7 +52,7 @@ class _PagePublicWidgetState extends State<PagePublicWidget> {
       var fetchArticleResponse = await ApiService()
           .fetchArticleResponse(widget.data.id, widget.currentPage);
       setState(() {
-        print("zhy^_^ ApiService ");
+        print("zhy^_^ ApiService "+widget.data.name);
         var newData = fetchArticleResponse.data.datas;
         widget.items.addAll(newData);
         widget.currentPage++;
@@ -60,7 +60,7 @@ class _PagePublicWidgetState extends State<PagePublicWidget> {
       });
     } catch (e) {
       // Handle error, e.g., show error message
-      print('Error fetching data: $e');
+      print('zhy Error >>>  $e');
       setState(() {
         widget._loading = false;
       });

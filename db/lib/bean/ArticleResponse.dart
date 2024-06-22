@@ -21,16 +21,21 @@ class ArticleData {
   int size = 0;
   int total = 0;
 
-  ArticleData.fromJson(Map<String, dynamic> json) {
-    curPage = json['curPage'];
-    if (json['datas'] != null) {
-      datas = List<Article>.from(
-          json['datas'].map((item) => Article.fromJson(item, false)));
+  ArticleData.fromJson(Map<String, dynamic>? json) {
+    if (json != null) {
+      curPage = json['curPage'] ?? 0;
+      if (json['datas'] != null) {
+        datas = List<Article>.from(
+          json['datas'].map((item) => Article.fromJson(item, false)),
+        );
+      }
+      offset = json['offset'] ?? 0;
+      over = json['over'] ?? false;
+      pageCount = json['pageCount'] ?? 0;
+      size = json['size'] ?? 0;
+      total = json['total'] ?? 0;
+    } else {
+      // Handle case where json is null (if needed)
     }
-    offset = json['offset'];
-    over = json['over'];
-    pageCount = json['pageCount'];
-    size = json['size'];
-    total = json['total'];
   }
 }
