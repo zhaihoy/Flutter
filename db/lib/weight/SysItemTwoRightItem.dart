@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 
 class StsItemTwoRightItem extends StatefulWidget {
   final List<Article> articles;
+  final ValueChanged<double> onHeightChanged; // Callback to parent widget
 
-  StsItemTwoRightItem(this.articles, {Key? key}) : super(key: key);
+  StsItemTwoRightItem(this.articles, {required this.onHeightChanged, Key? key})
+      : super(key: key);
 
   @override
   _StsItemTwoRightItemState createState() => _StsItemTwoRightItemState();
@@ -21,7 +23,7 @@ class _StsItemTwoRightItemState extends State<StsItemTwoRightItem> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Get height after build
       _height = context.size?.height ?? 0.0;
-      print('StsItemTwoRightItem height: $_height');
+      widget.onHeightChanged(_height);
     });
   }
 

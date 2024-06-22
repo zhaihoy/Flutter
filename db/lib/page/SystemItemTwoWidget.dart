@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import '../bean/Article.dart';
 import '../weight/SysItemTwoRightItem.dart';
 
@@ -17,6 +18,8 @@ class _SystemItemTwoWidgetState extends State<SystemItemTwoWidget> {
   double proportion = 1.0;
   int _selectedIndex = 0; // State variable to keep track of the selected index
   List<Widget> rightPage = [];
+  List<double> rightPageHeights =
+  []; // List to store heights of rightPage items
 
   @override
   void initState() {
@@ -26,9 +29,16 @@ class _SystemItemTwoWidgetState extends State<SystemItemTwoWidget> {
     scrollController2.addListener(_scrollListener);
 
     // Initialize rightPage using List.generate
-    rightPage = List.generate(widget.data.length,
-        (index) => StsItemTwoRightItem(widget.data[index].articles));
-
+    rightPage = List.generate(
+        widget.data.length,
+            (index) =>
+            StsItemTwoRightItem(
+              widget.data[index].articles,
+              onHeightChanged: (double height) {
+                rightPageHeights[index] = height;
+              },
+            ));
+    rightPageHeights = List<double>.filled(widget.data.length, 0.0);
     proportion = widget.data.length / 100;
   }
 
@@ -41,32 +51,41 @@ class _SystemItemTwoWidgetState extends State<SystemItemTwoWidget> {
   }
 
   void _scrollListener() {
-    double position = scrollController2.position.pixels;
-    double maxScrollExtent = scrollController2.position.maxScrollExtent;
-    double scrollPercentage =
-        (position / maxScrollExtent * 100).clamp(0.0, 100.0);
+    // 获取当前滚动位置的信息
+    final pos = scrollController2.position;
+    // Check if the scroll is due to user interaction or programmatic control
+    if (pos.userScrollDirection == ScrollDirection.forward ||
+        pos.userScrollDirection == ScrollDirection.reverse) {
+      double position = pos.pixels;
+      double maxScrollExtent = pos.maxScrollExtent;
+      double scrollPercentage =
+      (position / maxScrollExtent * 100).clamp(0.0, 100.0);
+      int index = (proportion * scrollPercentage).floor();
+      if (_selectedIndex != index) {
+        setState(() {
+          _selectedIndex = index;
+        });
+        _scrollToPosition(index);
+      }
+    } else {
 
-    int index = (proportion * scrollPercentage).floor();
-    if (_selectedIndex != index) {
-      setState(() {
-        _selectedIndex = index;
-      });
-      _scrollToPosition(index);
     }
   }
 
   void _scrollToPosition(int position) {
     scrollController.animateTo(
       position * 50.0,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 100),
       curve: Curves.easeInOut,
     );
   }
 
   void listen(int index) {
-    // Iterate through each item to find its size
-    var page = rightPage[index] as StsItemTwoRightItem ;
-
+    var currentHeight = 0;
+    for (int i = 0; i <= index; i++) {
+      currentHeight += rightPageHeights[i].toInt();
+    }
+    scrollController2.jumpTo(currentHeight * 1.0);
   }
 
   @override
@@ -78,7 +97,10 @@ class _SystemItemTwoWidgetState extends State<SystemItemTwoWidget> {
     return Row(
       children: [
         Container(
-          width: MediaQuery.of(context).size.width * 0.3,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width * 0.3,
           child: ListView.builder(
             controller: scrollController,
             itemCount: widget.data.length,
@@ -115,9 +137,9 @@ class _SystemItemTwoWidgetState extends State<SystemItemTwoWidget> {
         ),
         Expanded(
             child: ListView(
-          controller: scrollController2,
-          children: rightPage,
-        )),
+              controller: scrollController2,
+              children: rightPage,
+            )),
       ],
     );
   }
