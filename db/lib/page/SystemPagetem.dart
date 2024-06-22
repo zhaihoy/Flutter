@@ -1,5 +1,5 @@
-import 'package:db/page/SystemItemOneWidget.dart';
-import 'package:db/page/SystemItemTwoWidget.dart';
+import 'package:db/page/SystemItemOnePage.dart';
+import 'package:db/page/SystemItemTwoPage.dart';
 import 'package:db/service/ApiService.dart';
 import 'package:flutter/material.dart';
 
@@ -8,9 +8,7 @@ class SystemPageItem extends StatefulWidget {
   bool isLoading = true;
   bool hasError = false;
 
-  SystemPageItem({super.key}) {
-    print("zhy^_^>>> SystemPageItem");
-  }
+  SystemPageItem({super.key});
 
   @override
   State<SystemPageItem> createState() => _SystemPageItemState();

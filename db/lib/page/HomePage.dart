@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 
 import '../provider/BottomNavigationBarProvider.dart';
 import '../weight/DrawContainer.dart';
-import 'homePageItem.dart';
-import 'ProjectPageItem.dart';
-import 'PublicNumberItem.dart';
-import 'SquarePagetem.dart';
+import 'homeItemPage.dart';
+import 'ProjectItemPage.dart';
+import 'PublicItemNumberPage.dart';
+import 'SquarePage.dart';
 import 'SystemPagetem.dart';
 
 class HomePage extends StatelessWidget {

@@ -41,9 +41,9 @@ class _PublicNumberItemState extends State<PublicNumberItem>
     try {
       // Check if data is cached
       if (widget._cache.containsKey(widget._selectedIndex)) {
-        if(widget._cache[widget._selectedIndex]==null){
-          print("zhy^_^ "+widget._selectedIndex.toString());
-        }else{
+        if (widget._cache[widget._selectedIndex] == null) {
+          print("zhy^_^ " + widget._selectedIndex.toString());
+        } else {
           setState(() {
             _updateUIWithCachedData(widget._selectedIndex);
           });
@@ -137,7 +137,7 @@ class _PublicNumberItemState extends State<PublicNumberItem>
                     alignment: Alignment.center,
                     color: widget._selectedIndex == index
                         ? Colors.blue[200]
-                        : Colors.teal[300],
+                        : Colors.blue[100],
                     child: Text(
                       widget._titles[index],
                       style: TextStyle(

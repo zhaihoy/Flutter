@@ -3,10 +3,12 @@ import 'package:db/utils/FluroUtils.dart';
 import 'package:db/weight/TagWidget.dart';
 import 'package:db/weight/route/ARoute.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 /// 主页Item组件
 class ArticleCard extends StatefulWidget {
   final Article data;
+  final from = false;
 
   const ArticleCard(this.data, {super.key});
 
@@ -25,6 +27,9 @@ class _ArticleCardState extends State<ArticleCard> {
       for (var t in tags) {
         tagWidget.add(TagWidget(t));
       }
+    } else {
+      var tag = Tag(name: "广场Tab/广场", url: "");
+      tagWidget.add(TagWidget(tag));
     }
   }
 
@@ -70,8 +75,13 @@ class _ArticleCardState extends State<ArticleCard> {
         if (widget.data.isTop) _buildTag('顶置', Colors.red),
         // if (widget.data.chapterName.isNotEmpty)
         //   _buildTag(widget.data.chapterName, Colors.red),
-        if (widget.data.superChapterName.isNotEmpty)
-          _buildTag(widget.data.superChapterName, Colors.blueAccent),
+        if (widget.data.superChapterName.isNotEmpty &&
+            widget.data.superChapterName != "广场Tab")
+          _buildTag(widget.data.superChapterName, Colors.blueAccent)
+        else if (widget.data.shareUser.isNotEmpty)
+          _buildTag(widget.data.shareUser, Colors.blueAccent)
+        else if (widget.data.chapterName.isNotEmpty)
+          _buildTag(widget.data.chapterName, Colors.blueAccent),
         const SizedBox(width: 8.0),
         if (widget.data.author.isNotEmpty) _buildAuthor(),
         const SizedBox(width: 8.0),
@@ -161,7 +171,15 @@ class _ArticleCardState extends State<ArticleCard> {
         IconButton(
           icon: const Icon(Icons.favorite_border),
           onPressed: () {
-            // Handle like button press
+            Fluttertoast.showToast(
+                msg: "哎呀 你点痛我了~",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.red[200],
+                textColor: Colors.white,
+                fontSize: 16.0
+            );
           },
         ),
       ],

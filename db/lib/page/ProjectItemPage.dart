@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../weight/FullScreenDraggableButton.dart';
+
 class ProjectPageItem extends StatefulWidget {
   const ProjectPageItem({super.key});
 
@@ -10,6 +12,6 @@ class ProjectPageItem extends StatefulWidget {
 class _PublicNumberItemState extends State<ProjectPageItem> {
   @override
   Widget build(BuildContext context) {
-    return Text("ProjectPageItem");
+    return RadialMenuButton();
   }
 }

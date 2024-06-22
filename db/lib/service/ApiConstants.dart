@@ -7,4 +7,5 @@ class ApiConstants {
   static const String SYS_LIST = "tree/json";
   static const String SYS_NAVI_LIST = "navi/json";
   static const String SYS_DEATIL_LIST = "article/list/{page}/json?cid={cid}";
+  static const String SQA_LIST = "user_article/list/{page}/json";
 }

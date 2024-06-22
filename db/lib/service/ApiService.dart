@@ -169,6 +169,13 @@ class ApiService {
             .replaceAll('{page}', page.toString());
   }
 
+  /// page 页码
+  String getSQAUrl(int page) {
+    // 使用字符串插值来动态替换参数
+    return baseUrl +
+        ApiConstants.SQA_LIST.replaceAll('{page}', page.toString());
+  }
+
   /// 请求体系列表
   Future<ChapterResponse> fetchPageSysItemData() async {
     final response = await http.get(Uri.parse(baseUrl + ApiConstants.SYS_LIST));
@@ -218,6 +225,29 @@ class ApiService {
       }
     } else {
       throw Exception('Error: $statusCode, Body: $body');
+    }
+  }
+
+  ///广场列表数据
+  /// https://wanandroid.com/user_article/list/页码/json
+  /// GET请求
+  /// 页码拼接在url上从0开始
+  /// 注：该接口支持传入 page_size 控制分页数量，取值为[1-40]，不传则使用默认值，一旦传入了 page_size，后续该接口分页都需要带上，否则会造成分页读取错误。
+  Future<ArticleResponse> fetchSQAResponse(int pageValue) async {
+    var wxArticleUrl = getSQAUrl(pageValue);
+    print("zhy^_^ "+wxArticleUrl);
+    var response = await http.get(Uri.parse(wxArticleUrl));
+    final statusCode = response.statusCode;
+    final body = response.body;
+    if (statusCode >= 200 && statusCode < 300) {
+      if (body.isNotEmpty) {
+        final jsonResponse = json.decode(body) as Map<String, dynamic>;
+        return ArticleResponse.fromJson(jsonResponse);
+      } else {
+        throw Exception('zhy Error: $statusCode, Body: $body');
+      }
+    } else {
+      throw Exception('zhy Error: $statusCode, Body: $body');
     }
   }
 }
