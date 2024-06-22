@@ -52,13 +52,13 @@ class _SystemItemCardState extends State<SystemItemCard> {
                       ),
                     ),
                     SizedBox(height: 10),
-                    Wrap(
+                    Wrap( //todo 包含组件
                       spacing: 8.0, // 每个chip之间的水平间距
                       runSpacing: 4.0, // 每行之间的垂直间距
                       children: widget.data.children.map((child) {
                         return Chip(
                           label: Text(child.name),
-                          backgroundColor: Colors.blue,
+                          backgroundColor: Colors.blue[200],
                           labelStyle: TextStyle(color: Colors.white),
                         );
                       }).toList(),

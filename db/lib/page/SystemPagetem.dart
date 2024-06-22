@@ -89,7 +89,7 @@ class _SystemPageItemState extends State<SystemPageItem>
       setState(() {
         widget.pageList = [
           SystemItemOneWidget(fetchPageSysItemData.data),
-          // SystemItemTwoWidget(fetchPageSysData.data),
+          SystemItemTwoWidget(fetchPageSysData.data),
         ];
         widget.isLoading = false;
       });
