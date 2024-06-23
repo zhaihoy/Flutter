@@ -52,7 +52,6 @@ class _PagePublicWidgetState extends State<PagePublicWidget> {
       var fetchArticleResponse = await ApiService()
           .fetchArticleResponse(widget.data.id, widget.currentPage);
       setState(() {
-        print("zhy^_^ ApiService "+widget.data.name);
         var newData = fetchArticleResponse.data.datas;
         widget.items.addAll(newData);
         widget.currentPage++;

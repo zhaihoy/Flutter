@@ -5,27 +5,35 @@ import '../weight/FullScreenDraggableButton.dart';
 import 'ProjectArticleCardPage.dart';
 
 class ProjectPageItem extends StatefulWidget {
-  const ProjectPageItem({Key? key}) : super(key: key);
+  ProjectPageItem({Key? key}) : super(key: key);
 
   @override
   _ProjectPageItemState createState() => _ProjectPageItemState();
 }
 
 class _ProjectPageItemState extends State<ProjectPageItem> {
-  List<Chapter> chapters = [];
+  int currentPageIndex = 0;
+  late Future<List<Chapter>> _fetchDataFuture;
+
   List<Widget> pageList = [];
   PageController pageController = PageController();
 
   @override
   void initState() {
     super.initState();
-    fetchData(); // Start fetching data when the widget initializes
+    _fetchDataFuture = fetchData();
+  }
+
+  void onPageChanged(int index) {
+    setState(() {
+      currentPageIndex = index;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Chapter>>(
-      future: fetchData(),
+      future: _fetchDataFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -34,20 +42,21 @@ class _ProjectPageItemState extends State<ProjectPageItem> {
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return Center(child: Text('No data available'));
         } else {
-          chapters = snapshot.data!;
-          // Build the pageList once data is fetched
-          pageList = chapters
-              .map((chapter) => ProjectArticleCardPage(chapter))
-              .toList();
+          var chapters = snapshot.data!;
+          pageList = chapters.map((chapter) => ProjectArticleCardPage(chapter)).toList();
+
           return Stack(
             children: [
               PageView(
                 controller: pageController,
                 children: pageList,
-                onPageChanged: (int index) {
-                },
+                onPageChanged: onPageChanged,
               ),
-              FloatingMenu(chapters, handleButtonClick),
+              FloatingMenu(
+                chapters: chapters,
+                handleButtonClick: handleButtonClick,
+                currentPageIndex: currentPageIndex,
+              ),
             ],
           );
         }
@@ -58,11 +67,7 @@ class _ProjectPageItemState extends State<ProjectPageItem> {
   Future<List<Chapter>> fetchData() async {
     try {
       var fetchPageSysItemData = await ApiService().fetchPageProjectItemData();
-      if (fetchPageSysItemData.data.isNotEmpty) {
-        return fetchPageSysItemData.data;
-      } else {
-        return []; // or handle empty case as needed
-      }
+      return fetchPageSysItemData.data.isNotEmpty ? fetchPageSysItemData.data : [];
     } catch (e) {
       print('Error fetching data: $e');
       throw e;

@@ -1,6 +1,8 @@
+import 'package:db/weight/route/ARoute.dart';
 import 'package:flutter/material.dart';
 
 import '../bean/PageResponseData.dart';
+import '../utils/FluroUtils.dart';
 
 class ProjectArticleCardItem extends StatefulWidget {
   Article chapter;
@@ -23,7 +25,8 @@ class ProjectArticleCardStatefulWidget extends State<ProjectArticleCardItem> {
       ),
       child: InkWell(
         onTap: () {
-// Handle card tap
+          Fluroutils.navigateTo(context,
+              '${ARoute.webViewPage}?title=${Uri.encodeComponent(widget.chapter.title)}&url=${Uri.encodeComponent(widget.chapter.link)}');
         },
         child: Padding(
           padding: const EdgeInsets.all(8.0),

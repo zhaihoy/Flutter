@@ -2,25 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:db/bean/ChapterResponse.dart';
 
 class FloatingMenu extends StatefulWidget {
-  final List<Chapter> title;
+  final List<Chapter> chapters;
   final void Function(int index) handleButtonClick;
+  final int currentPageIndex;
 
-  const FloatingMenu(this.title, this.handleButtonClick, {Key? key})
-      : super(key: key);
+  const FloatingMenu({
+    required this.chapters,
+    required this.handleButtonClick,
+    required this.currentPageIndex,
+    Key? key,
+  }) : super(key: key);
 
   @override
   _FloatingMenuState createState() => _FloatingMenuState();
-
 }
 
-class _FloatingMenuState extends State<FloatingMenu>
-    with SingleTickerProviderStateMixin {
+class _FloatingMenuState extends State<FloatingMenu> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   bool _isMenuOpen = false;
   int _selectedIndex = 0;
   List<String> menuItems = [];
 
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -31,8 +34,21 @@ class _FloatingMenuState extends State<FloatingMenu>
     );
 
     // Initialize menu items only if titles are not empty
-    if (widget.title.isNotEmpty) {
-      menuItems = widget.title.map((chapter) => chapter.name).toList();
+    if (widget.chapters.isNotEmpty) {
+      menuItems = widget.chapters.map((chapter) => chapter.name).toList();
+    } else {
+      menuItems = [];
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant FloatingMenu oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update local _selectedIndex when currentPageIndex changes
+    if (widget.currentPageIndex != _selectedIndex) {
+      setState(() {
+        _selectedIndex = widget.currentPageIndex;
+      });
     }
   }
 
@@ -48,7 +64,7 @@ class _FloatingMenuState extends State<FloatingMenu>
       _isMenuOpen = !_isMenuOpen;
       if (_isMenuOpen) {
         _controller.forward();
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           scrollToSelectedItem();
         });
       } else {
@@ -58,10 +74,10 @@ class _FloatingMenuState extends State<FloatingMenu>
   }
 
   void selectMenuItem(int index) {
+    widget.handleButtonClick(index); // Notify parent of the selection
     setState(() {
-      _selectedIndex = index;
+      _selectedIndex = index; // Update local selected index
       toggleMenu();
-      widget.handleButtonClick(index);
     });
   }
 
@@ -79,7 +95,7 @@ class _FloatingMenuState extends State<FloatingMenu>
 
   @override
   Widget build(BuildContext context) {
-    String selectedMenuItemName = menuItems[_selectedIndex];
+    String selectedMenuItemName = menuItems.isNotEmpty ? menuItems[_selectedIndex] : '';
 
     return Positioned(
       bottom: 16,

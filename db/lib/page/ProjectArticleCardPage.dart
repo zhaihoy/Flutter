@@ -13,7 +13,8 @@ class ProjectArticleCardPage extends StatefulWidget {
   _ProjectArticleCardPageState createState() => _ProjectArticleCardPageState();
 }
 
-class _ProjectArticleCardPageState extends State<ProjectArticleCardPage> {
+class _ProjectArticleCardPageState extends State<ProjectArticleCardPage>
+    with AutomaticKeepAliveClientMixin {
   int currentPage = 0;
   List<Article> data = [];
   ScrollController scrollController = ScrollController();
@@ -24,7 +25,8 @@ class _ProjectArticleCardPageState extends State<ProjectArticleCardPage> {
     fetchData(); // Fetch initial data when widget initializes
     // Add listener to fetch more data when reaching the end of list
     scrollController.addListener(() {
-      if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+      if (scrollController.position.pixels ==
+          scrollController.position.maxScrollExtent) {
         fetchNextPage();
       }
     });
@@ -61,7 +63,7 @@ class _ProjectArticleCardPageState extends State<ProjectArticleCardPage> {
   Future<void> fetchData() async {
     try {
       var fetchPageProjectItemData =
-      await ApiService().fetchData(currentPage, widget.chapter.id);
+          await ApiService().fetchData(currentPage, widget.chapter.id);
       var newData = fetchPageProjectItemData.data.datas;
       setState(() {
         data.addAll(newData);
@@ -76,4 +78,7 @@ class _ProjectArticleCardPageState extends State<ProjectArticleCardPage> {
     currentPage++;
     await fetchData();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
