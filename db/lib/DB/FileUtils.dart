@@ -6,7 +6,8 @@ import 'dart:async';
 class FileUtils {
   static const String fileName = 'data.json';
 
-  static Future<File?> saveJsonToFile(Map<String, dynamic> jsonMap) async {
+  static Future<File?> saveJsonToFile(
+      String fileName, Map<String, dynamic> jsonMap) async {
     try {
       String jsonString = json.encode(jsonMap);
       File file = File(fileName);
@@ -17,7 +18,7 @@ class FileUtils {
     }
   }
 
-  static Future<Map<String, dynamic>?> readJsonFromFile() async {
+  static Future<Map<String, dynamic>?> readJsonFromFile( String fileName) async {
     try {
       File file = File(fileName);
       if (await file.exists()) {
@@ -43,7 +44,7 @@ class FileUtils {
 
 void main() async {
   // Try to read from file first
-  Map<String, dynamic>? loadedJson = await FileUtils.readJsonFromFile();
+  Map<String, dynamic>? loadedJson = await FileUtils.readJsonFromFile("fileName.json");
 
   if (loadedJson != null) {
     // Use local data
@@ -98,7 +99,7 @@ void main() async {
     };
 
     // Save fetched data to file
-    await FileUtils.saveJsonToFile(jsonMap);
+    await FileUtils.saveJsonToFile("fileName.json",jsonMap);
 
     // Use fetched data
     print('Using fetched data:');
