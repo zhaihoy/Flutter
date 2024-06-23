@@ -235,7 +235,7 @@ class ApiService {
   /// 注：该接口支持传入 page_size 控制分页数量，取值为[1-40]，不传则使用默认值，一旦传入了 page_size，后续该接口分页都需要带上，否则会造成分页读取错误。
   Future<ArticleResponse> fetchSQAResponse(int pageValue) async {
     var wxArticleUrl = getSQAUrl(pageValue);
-    print("zhy^_^ "+wxArticleUrl);
+    print("zhy^_^ " + wxArticleUrl);
     var response = await http.get(Uri.parse(wxArticleUrl));
     final statusCode = response.statusCode;
     final body = response.body;
@@ -248,6 +248,43 @@ class ApiService {
       }
     } else {
       throw Exception('zhy Error: $statusCode, Body: $body');
+    }
+  }
+
+  /// 请求项目列表
+  Future<ChapterResponse> fetchPageProjectItemData() async {
+    final response = await http.get(Uri.parse(baseUrl + ApiConstants.PROJECT_LIST));
+    print("zhy >>"+baseUrl + ApiConstants.PROJECT_LIST);
+    final statusCode = response.statusCode;
+    final body = response.body;
+    if (statusCode >= 200 && statusCode < 300) {
+      if (body.isNotEmpty) {
+        final jsonResponse = json.decode(body) as Map<String, dynamic>;
+        return ChapterResponse.fromJson(jsonResponse);
+      } else {
+        throw Exception('zhy Error: $statusCode, Body: $body');
+      }
+    } else {
+      throw Exception('zhy Error: $statusCode, Body: $body');
+    }
+  }
+
+  /// 获取项目item下的列表
+  /// 参数：页码，拼接在连接中，从0开始。
+  Future<PagePageResponseData> fetchData(int page, int cid) async {
+    final response = await http
+        .get(Uri.parse('$baseUrl${"project/list/"}$page/json?cid=$cid'));
+    final statusCode = response.statusCode;
+    final body = response.body;
+    if (statusCode >= 200 && statusCode < 300) {
+      if (body.isNotEmpty) {
+        final jsonResponse = json.decode(body) as Map<String, dynamic>;
+        return PagePageResponseData.fromJson(jsonResponse);
+      } else {
+        throw Exception('Error: $statusCode, Body: $body');
+      }
+    } else {
+      throw Exception('Error: $statusCode, Body: $body');
     }
   }
 }

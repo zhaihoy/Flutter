@@ -381,3 +381,40 @@ Row(
 以上是这些组件或模式常见的属性及其在Flutter中的用法示例。它们分别用于创建页面视图、显示横幅信息和在数据变化时更新UI。
 这些是一些常见的 Flutter 组件及其属性示例。Flutter 还有很多其他强大和灵活的组件，可以根据具体需要进一步探索和使用。以上组件在本项目中均有使用
 还有一些像是PageView、NetScrollView、GridView etc...还请看源码学习
+
+5.**关键字**
+
+- mixin
+  是一种允许在类中共享功能的机制。mixin可以将一组方法或属性添加到多个类中，而无需使用继承。它提供了一种水平代码复用的方法，避免了单继承的限制。通过使用mixin，你可以将通用的功能封装起来，并在需要的地方应用，而不需要创建复杂的继承层次结构。
+    ``` 
+    mixin Logger {
+   void log(String message) {
+   print("Log: $message");
+   }
+   }
+
+   class NetworkService with Logger {
+   void fetchData() {
+
+    log("Fetching data from network.");
+    // 实际的网络请求代码
+    }
+   }
+  
+     class DatabaseService with Logger {
+       void saveData() {
+        log("Saving data to database.");
+        // 实际的数据库保存代码
+       }
+     }
+     
+  void main() {
+       NetworkService networkService = NetworkService();
+       networkService.fetchData(); // 输出: Log: Fetching data from network.
+     
+        DatabaseService databaseService = DatabaseService();
+        databaseService.saveData(); // 输出: Log: Saving data to database.
+    }
+ 
+    ```
+  - 命名以_internal开头的类通常用于实现单例模式（Singleton Pattern）。这种模式确保一个类只有一个实例，并提供全局访问点。通过这种方式，可以确保共享的资源或配置只存在一个实例，避免了不必要的资源消耗和潜在的同步问题。 （参考 ApiService.dart）

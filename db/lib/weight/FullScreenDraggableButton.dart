@@ -1,130 +1,140 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:db/bean/ChapterResponse.dart';
 
+class FloatingMenu extends StatefulWidget {
+  final List<Chapter> title;
+  final void Function(int index) handleButtonClick;
 
-class RadialMenuButton extends StatelessWidget {
+  const FloatingMenu(this.title, this.handleButtonClick, {Key? key})
+      : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
-    return DragExpandMenu();
-  }
+  _FloatingMenuState createState() => _FloatingMenuState();
+
 }
 
-class DragExpandMenu extends StatefulWidget {
-  @override
-  _DragExpandMenuState createState() => _DragExpandMenuState();
-}
-
-class _DragExpandMenuState extends State<DragExpandMenu>
+class _FloatingMenuState extends State<FloatingMenu>
     with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  bool isMenuOpen = false;
+  late AnimationController _controller;
+  bool _isMenuOpen = false;
+  int _selectedIndex = 0;
+  List<String> menuItems = [];
+
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
+    _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 500),
-      reverseDuration: Duration(milliseconds: 300),
+      duration: Duration(milliseconds: 300),
     );
+
+    // Initialize menu items only if titles are not empty
+    if (widget.title.isNotEmpty) {
+      menuItems = widget.title.map((chapter) => chapter.name).toList();
+    }
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _controller.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
-  void _toggleMenu() {
-    isMenuOpen
-        ? _animationController.reverse()
-        : _animationController.forward();
-    isMenuOpen = !isMenuOpen;
+  void toggleMenu() {
+    setState(() {
+      _isMenuOpen = !_isMenuOpen;
+      if (_isMenuOpen) {
+        _controller.forward();
+        WidgetsBinding.instance!.addPostFrameCallback((_) {
+          scrollToSelectedItem();
+        });
+      } else {
+        _controller.reverse();
+      }
+    });
+  }
+
+  void selectMenuItem(int index) {
+    setState(() {
+      _selectedIndex = index;
+      toggleMenu();
+      widget.handleButtonClick(index);
+    });
+  }
+
+  void scrollToSelectedItem() {
+    if (_scrollController.hasClients) {
+      double itemExtent = 100.0; // Adjust item extent according to your UI
+      double offset = _selectedIndex * itemExtent;
+      _scrollController.animateTo(
+        offset,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Drag Expand Menu'),
-      ),
-      body: GestureDetector(
-        onPanUpdate: (details) {
-          if (details.delta.dx > 0) {
-            _toggleMenu();
-          }
-        },
-        child: Stack(
-          children: [
-            Positioned(
-              bottom: 16.0,
-              right: 16.0,
-              child: GestureDetector(
-                onTap: _toggleMenu,
-                child: Container(
-                  width: 50.0,
-                  height: 50.0,
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Icon(
-                      Icons.menu,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) {
-                return Transform.scale(
-                  scale: _animationController.value,
-                  child: Stack(
-                    children: [
-                      for (int i = 0; i < 5; i++)
-                        _buildMenuItem(
-                          index: i,
-                          totalItems: 5,
-                        ),
-                    ],
-                  ),
-                );
+    String selectedMenuItemName = menuItems[_selectedIndex];
+
+    return Positioned(
+      bottom: 16,
+      right: 16,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          AnimatedContainer(
+            duration: Duration(milliseconds: 300),
+            width: _isMenuOpen ? MediaQuery.of(context).size.width : 0,
+            height: 40,
+            child: ListView.builder(
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              itemCount: menuItems.length,
+              itemBuilder: (BuildContext context, int index) {
+                return buildMenuItem(index, menuItems[index]);
               },
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 8), // Spacer between menu and FAB
+          FloatingActionButton(
+            backgroundColor: Colors.blue[900],
+            onPressed: toggleMenu,
+            child: Text(
+              selectedMenuItemName,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildMenuItem({required int index, required int totalItems}) {
-    double angle = index * 2 * pi / totalItems;
-    double menuRadius = 120.0;
-    double x = menuRadius * cos(angle);
-    double y = menuRadius * sin(angle);
+  Widget buildMenuItem(int index, String text) {
+    bool isSelected = index == _selectedIndex;
 
-    return Positioned(
-      bottom: 16.0 + y,
-      right: 16.0 + x,
-      child: GestureDetector(
-        onTap: () {
-          // Handle menu item click
-          print('Clicked on menu item $index');
-        },
-        child: Container(
-          width: 40.0,
-          height: 40.0,
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: Icon(
-              Icons.star,
-              color: Colors.white,
+    return GestureDetector(
+      onTap: () => selectMenuItem(index),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.blue[900] : Colors.blue[100],
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Center(
+          child: Text(
+            text,
+            style: TextStyle(
+              color: isSelected ? Colors.white : Colors.black,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),
         ),
