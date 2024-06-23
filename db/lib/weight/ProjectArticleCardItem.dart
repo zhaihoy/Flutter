@@ -54,7 +54,7 @@ class ProjectArticleCardStatefulWidget extends State<ProjectArticleCardItem> {
                         fontSize: 14.0,
                       ),
                     ),
-                    SizedBox(height: 8.0),
+                    const SizedBox(height: 8.0),
                     Text(
                       widget.chapter.title,
                       style: const TextStyle(
